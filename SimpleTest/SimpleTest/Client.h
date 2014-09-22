@@ -1,5 +1,8 @@
 #include <boost\asio.hpp>
+#include <boost\bind.hpp>
+#include<iostream>
 
+using namespace std;
 using namespace boost;
 typedef boost::asio::io_service IOService;
 typedef boost::asio::ip::tcp::endpoint EndPoint;
@@ -15,7 +18,7 @@ public:
 
     bool ConnectToServer(EndPoint ep);
 
-    bool SendData(const char* data, size_t len);
+    void SendData(const char* data, size_t len=0);
 
     void SendComplete(const boost::system::error_code& err,  size_t bytes_transferred);
 

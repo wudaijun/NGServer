@@ -37,6 +37,7 @@ void Session::ProcessData()
 #ifdef _DEBUG
     string str(_recv_buf, _recv_off);
     cout << " -- RECV FROM [" << _id << "]: " << str << endl;
+    SendAsync("Hello. this is Server.", strlen("Hello. this is Server."));
 #endif
 
 

@@ -65,6 +65,6 @@ void AsyncTcpListener::OnConnect(const std::shared_ptr<Socket>& socket)
 // Í£Ö¹¼àÌý
 void AsyncTcpListener::Stop()
 {
-    AutoLocker(&_lock);
+    AutoLocker locker(&_lock);
     if (_running) _running = false;
 }
