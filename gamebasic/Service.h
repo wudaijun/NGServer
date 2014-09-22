@@ -1,0 +1,5 @@
+#ifndef __NGSERVER_SERVICE_H_INLCUDE__
+#define __NGSERVER_SERVICE_H_INLCUDE__
+
+
+#endif
