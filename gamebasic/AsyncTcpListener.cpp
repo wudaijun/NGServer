@@ -56,9 +56,7 @@ void AsyncTcpListener::OnConnect(const std::shared_ptr<Socket>& socket)
 {
     uint32_t conn_id = ++_connect_id;
     std::shared_ptr<Session> session = std::make_shared<Session>(socket, conn_id);
-#ifdef _DEBUG
-    cout << " -- CONNECTED : [" << conn_id << "]" << endl;
-#endif
+
     if (session) session->StartRecv();
 }
 

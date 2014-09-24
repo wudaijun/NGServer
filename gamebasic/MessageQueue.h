@@ -57,6 +57,14 @@ public:
 		return nullptr;
 	}
 
+    ~MessageQueue()
+    {
+        for (auto item : _queue_writer)
+            delete item;
+        delete _queue_writer;
+        delete _queue_reader;
+    }
+
 private:
 	Locker _lock;
 	size_t _size = 0;
@@ -114,6 +122,13 @@ public:
 		return nullptr;
 	}
 
+    ~ByteBuff()
+    {
+        delete _buff_read;
+        delete _buff_write;
+        _buff_read = nullptr;
+        _buff_write = nullptr;
+    }
 private:
 	size_t _capacity;
 	size_t _size = 0;

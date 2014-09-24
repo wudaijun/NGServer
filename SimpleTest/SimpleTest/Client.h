@@ -11,8 +11,8 @@ typedef boost::asio::ip::tcp::socket Socket;
 class TcpClient
 {
 public:
-    TcpClient(IOService* ioservice) :
-        _ioservice(ioservice), _socket(*ioservice){}
+    TcpClient(IOService* ioservice, int32_t id=0) :
+        _ioservice(ioservice), _socket(*ioservice), _id(id){}
 
     bool ConnectToServer(const std::string& ip, int32_t port);
 
@@ -26,6 +26,6 @@ public:
 private:
     IOService* _ioservice;
     Socket _socket;
-
+    int32_t _id;
     char _read_buf[65535];
 };

@@ -42,5 +42,5 @@ void TcpClient::RecvComplete(const boost::system::error_code& err, size_t bytes_
         return;
 
     string str(_read_buf, bytes_transferred);
-    cout << "Server Say : " << str << endl;
+    cout << "["<<_id<<"] Recv: " << str << endl;
 }

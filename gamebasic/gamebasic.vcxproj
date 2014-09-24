@@ -144,6 +144,7 @@
     <ClInclude Include="MessageQueue.h" />
     <ClInclude Include="NetHead.h" />
     <ClInclude Include="Service.h" />
+    <ClInclude Include="ServiceManager.h" />
     <ClInclude Include="Session.h" />
   </ItemGroup>
   <ItemGroup>

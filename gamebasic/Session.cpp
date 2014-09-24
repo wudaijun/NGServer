@@ -2,6 +2,10 @@
 
 void Session::StartRecv()
 {
+#ifdef _DEBUG
+    cout << " ^^ CONNECTED : [" << _id << "]" << endl;
+#endif
+
     if (_run)
         return;
 
@@ -21,8 +25,11 @@ void Session::AsyncReadSome()
 void Session::ReadComplete(const boost::system::error_code& err, size_t bytes_transferred)
 {
     if (err || bytes_transferred == 0)
+    {
+        DisConnect();
+        _socket->close();
         return;
-
+    }
     _recv_total += bytes_transferred;
     _recv_off += bytes_transferred;
 
@@ -40,11 +47,13 @@ void Session::ProcessData()
     SendAsync("Hello. this is Server.", strlen("Hello. this is Server."));
 #endif
 
+    assert(_decoder);
+    // 将数据交由解码器处理 返回处理之后的缓冲区剩余字节数
+    int32_t remain = _decoder(_recv_buf,_recv_off);
 
-    int32_t remain = 0;
+    // 处理之后的偏移
     if (remain > 0 && remain < kBufferSize)
     {
-
         size_t remain_off = _recv_off - remain;
         _recv_off = (size_t)remain;
         memcpy(_recv_buf, _recv_buf + remain_off, _recv_off);
@@ -75,6 +84,7 @@ bool Session::SendAsync(const char* data, size_t len)
         assert(0); // 发送缓冲区满
 }
 
+// 发送数据 同一时刻只有一个线程调用该函数
 void Session::SendData(const char* data, size_t len)
 {
     _socket->async_write_some(boost::asio::buffer(data, len),
@@ -102,5 +112,24 @@ void Session::SendComplete(const boost::system::error_code& err, size_t bytes_to
     else
     {
         _sending_lock.UnLock();
+    }
+}
+
+// 断线处理
+void Session::DisConnect()
+{
+    if (_closing_lock.TryLock())
+    {
+    #ifdef _DEBUG
+        cout << " ~~ DISCONNECTED : [" << _id << "]" << endl;
+    #endif
+        if (_decoder)
+        {
+            // 通知解码器 连接已断开 进行相关逻辑业务处理
+            _decoder(nullptr, 0);
+            _decoder = nullptr;
+        }
+        // 停止发送数据
+        _run = false;
     }
 }

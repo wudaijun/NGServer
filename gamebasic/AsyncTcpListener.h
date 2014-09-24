@@ -29,8 +29,10 @@ private:
         const std::shared_ptr<Accepter>& acceptor,
         const std::shared_ptr<Socket>& socket);
 
-private:
+protected:
     atomic_uint32_t _connect_id = 1;
+
+private:
     IOService* _ioservice;
     Locker _lock;
     bool _running;
