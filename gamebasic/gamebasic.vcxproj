@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="AsyncTcpListener.h" />
     <ClInclude Include="Locker.h" />
+    <ClInclude Include="Message.h" />
     <ClInclude Include="MessageQueue.h" />
     <ClInclude Include="NetHead.h" />
     <ClInclude Include="Service.h" />

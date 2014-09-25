@@ -5,8 +5,8 @@
 #include "../../gamebasic/Session.h"
 
 /*
-*   文件名： Player.h 定义Player类
-*   Player类： 代表一个玩家，处理玩家的各种逻辑
+*      File： Player.h 定义Player类
+*   Created： 2014-09-24 晚上. by wudaijun
 */
 
 class Player : public std::enable_shared_from_this<Player>
