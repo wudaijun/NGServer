@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AsyncTcpListener.cpp" />
+    <ClCompile Include="Service.cpp" />
     <ClCompile Include="Session.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
