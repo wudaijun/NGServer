@@ -59,7 +59,7 @@ public:
 
     ~MessageQueue()
     {
-        for (auto item : _queue_writer)
+        for (auto item : *_queue_writer)
             delete item;
         delete _queue_writer;
         delete _queue_reader;
@@ -112,7 +112,7 @@ public:
 			AutoLocker aLock(&_lock);
 			if(_size > 0)
 			{
-				swap(_buff_read, _buff_write);
+				std::swap(_buff_read, _buff_write);
 				len = _size;
 				_size = 0;
 				return _buff_read;

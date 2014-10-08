@@ -42,6 +42,9 @@
     <ClInclude Include="Message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ServiceQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AsyncTcpListener.cpp">
@@ -52,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="Service.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceManager.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,10 +1,22 @@
 #include "Service.h"
+#include "ServiceManager.h"
 
 bool Service::Init()
 {
     return true;
 }
 
+bool Service::PushMsg(Message* msg)
+{
+    if (_msgqueue.PushMsg(msg) > 0)
+    {
+        return _readylock.TryLock();
+    }
+    return false;
+}
+
+// 取出消息队列中的消息  调用ReceiveMsg处理消息
+// 如果处理完之后 队列中还有剩余消息 则返回true 否则返回false
 bool Service::Receive()
 {
     std::vector<Message*>* msgs = _msgqueue.PopAll();
@@ -19,9 +31,15 @@ bool Service::Receive()
         }
     }
     msgs->clear();
-    return _msgqueue.Size();
+
+    if (_msgqueue.Size())
+        return true;
+    
+    _readylock.UnLock();
+    return false;
 }
 
+// 识别消息类型 通过ProcessMsg处理各种消息
 bool Service::ReceiveMsg(Message* msg)
 {
     MessageType type = msg->GetType();
@@ -55,8 +73,9 @@ bool Service::ReceiveMsg(Message* msg)
         CycleMessage* cyclemsg = dynamic_cast<CycleMessage*>(msg);
         if (cyclemsg != nullptr)
         {
-            freemsg = ProcessMsg(cyclemsg);
+            ProcessMsg(cyclemsg);
         }
+        freemsg = false;
         break;
 
     case kInsideMessage:
@@ -96,4 +115,9 @@ void Service::ProcessMsg(CycleMessage* msg)
 bool Service::ProcessMsg(InsideMessage* msg)
 {
     return true;
+}
+
+bool Service::Send(int32_t sid, Message* msg)
+{
+    ServiceManager::Send(sid, msg);
 }

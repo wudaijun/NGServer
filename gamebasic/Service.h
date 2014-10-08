@@ -5,11 +5,27 @@
 #include <boost/enable_shared_from_this.hpp>
 #include "Message.h"
 #include "MessageQueue.h"
+#include "Locker.h"
 
 class Service : public boost::enable_shared_from_this < Service > 
 {
 public:
+    Service(int32_t sid) :
+        _sid(sid){}
+
+    
+    inline int32_t GetSid() const 
+    {
+        return _sid;
+    }
+
+public:
+
+    // 接口 初始化Service
     virtual bool Init();
+
+    // 向Service推送消息
+    bool PushMsg(Message* msg);
 
     // 处理消息队列中的消息 返回值代表消息队列是否还有新的消息
     bool Receive();
@@ -21,12 +37,39 @@ public:
     virtual void ProcessMsg(CycleMessage* msg);
     virtual bool ProcessMsg(InsideMessage* msg);
 
+public:
+    static bool Send(int32_t sid, Message* msg);
+
+    bool SendMsg(int32_t sid, int64_t sessionid, int16_t msgid)
+    {
+        InsideMessage* msg = new InsideMessage();
+        msg->_dessid = sid;
+        msg->_srcsid = GetSid();
+        msg->_sessionid = sessionid;
+        msg->_msgid = msgid;
+        Service::Send(sid, msg);
+    }
+
+    template < typename MsgT > 
+    bool SendMsg(int32_t sid, int64_t sessionid, int16_t msgid, MsgT& t)
+    {
+        InsideMessageT* msg = new InsideMessageT<MsgT>();
+        msg->_dessid = sid;
+        msg->_srcsid = GetSid();
+        msg->_sessionid = sessionid;
+        msg->_msgid = msgid;
+        msg->_data = t;
+    }
 private:
     // 处理单条消息 返回值代表该消息是否需要被删除 
     bool ReceiveMsg(Message* msg);
 
 private:
-    MessageQueue<Message*> _msgqueue;
+    MessageQueue<Message> _msgqueue;
+    // 标识该Service的状态 lock表示当前有未处理的消息 通过_ready_lock.TryLock()来确认当前Service状态变化
+    Locker _readylock;
+
+    int32_t _sid;
 };
 
 

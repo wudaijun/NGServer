@@ -1,7 +1,6 @@
 #ifndef __NGSERVER_MESSAGE_H_INCLUDE__
 #define __NGSERVER_MESSAGE_H_INCLUDE__
 #include <stdint.h>
-#include "Service.h"
 #include "Locker.h"
 #include <boost/weak_ptr.hpp>
 
@@ -125,6 +124,8 @@ public:
 };
 
 // 循环执行的消息
+class Service;
+typedef std::shared_ptr<Service> ServicePtr;
 class CycleMessage : public Message
 {
 public:
