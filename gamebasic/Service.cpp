@@ -19,6 +19,13 @@ bool Service::PushMsg(Message* msg)
 // 如果处理完之后 队列中还有剩余消息 则返回true 否则返回false
 bool Service::Receive()
 {
+#ifdef _DEBUG
+    if (!_recvcheck.TryLock)
+    {
+        std::cerr << " # service Receive is not runing in single thread ! " << std::endl;
+        assert(0);
+    }
+#endif
     std::vector<Message*>* msgs = _msgqueue.PopAll();
     size_t size = msgs->size();
     for (size_t i = 0; i < size; i++)
@@ -34,7 +41,11 @@ bool Service::Receive()
 
     if (_msgqueue.Size())
         return true;
-    
+
+#ifdef _DEBUG
+    _recvcheck.UnLock();
+#endif
+
     _readylock.UnLock();
     return false;
 }
@@ -82,7 +93,7 @@ bool Service::ReceiveMsg(Message* msg)
         InsideMessage* insidemsg = dynamic_cast<InsideMessage*>(msg);
         if (insidemsg != nullptr)
         {
-            
+            freemsg = ProcessMsg(insidemsg);
         }
         break;
 

@@ -68,6 +68,8 @@ private:
     MessageQueue<Message> _msgqueue;
     // 标识该Service的状态 lock表示当前有未处理的消息 通过_ready_lock.TryLock()来确认当前Service状态变化
     Locker _readylock;
+    // 调试使用  用于确保同一时间只有一个线程在处理该Service的消息(通过 Receive 函数)
+    Locker _recvcheck;
 
     int32_t _sid;
 };
