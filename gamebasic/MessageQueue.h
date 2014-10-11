@@ -45,7 +45,7 @@ public:
 	{
 		if(_size > 0)
 		{
-			AutoLocker aLock locker(&_lock);
+			AutoLocker aLock(&_lock);
 			if(_size > 0)
 			{
                 assert(_queue_reader->size() == 0);

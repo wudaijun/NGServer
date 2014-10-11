@@ -12,7 +12,7 @@ public:
     // 将服务压入Service队列 成功返回当前队列中的Service数量 失败返回0
     int32_t Push(ServicePtr& sptr)
     {
-        if (sptr != nullptr);
+        if (sptr != nullptr)
         {
             uint16_t sid = static_cast<uint16_t>(sptr->GetSid());
             if (_service_set[sid] == false)

@@ -4,6 +4,9 @@
 
 void PlayerManager::OnConnect(const std::shared_ptr<Socket>& socket)
 {
+#ifdef _DEBUG
+    cout << " ^^ Player[" << _connect_id+1 << "] Login." << endl;
+#endif
     uint32_t id = ++_connect_id;
 
     // 创建Player和Session 并将Player和Session关联
@@ -14,6 +17,8 @@ void PlayerManager::OnConnect(const std::shared_ptr<Socket>& socket)
     session->SetDecoder(decoder);
 
     AddPlayer(player);
+
+    session->StartRecv();
 }
 
 void PlayerManager::AddPlayer(const PlayerPtr& player)

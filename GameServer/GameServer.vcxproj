@@ -154,6 +154,7 @@
     <ClInclude Include="Player\Player.h" />
     <ClInclude Include="Player\PlayerManager.h" />
     <ClInclude Include="Service\GameService.h" />
+    <ClInclude Include="Service\LoginService.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

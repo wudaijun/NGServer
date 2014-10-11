@@ -35,6 +35,7 @@ public:
         for (int i = 0; i < n; ++i)
             if (!_lock.test_and_set(std::memory_order_acquire))
                 return true;
+        return false;
     }
 
 private:

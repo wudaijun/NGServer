@@ -20,7 +20,7 @@ bool Service::PushMsg(Message* msg)
 bool Service::Receive()
 {
 #ifdef _DEBUG
-    if (!_recvcheck.TryLock)
+    if (!_recvcheck.TryLock())
     {
         std::cerr << " # service Receive is not runing in single thread ! " << std::endl;
         assert(0);
@@ -57,50 +57,55 @@ bool Service::ReceiveMsg(Message* msg)
     bool freemsg = true; // 是否需要删除该消息 作返回值
     switch (type)
     {
-    case kTimerMessage:
-        TimerMessage* timermsg = dynamic_cast<TimerMessage*>(msg);
-        if (timermsg != nullptr)
+        case kTimerMessage:
         {
-            if (!timermsg->IsCancel())
+            TimerMessage* timermsg = dynamic_cast<TimerMessage*>(msg);
+            if (timermsg != nullptr)
             {
-                int32_t nexttime = timermsg->_func();
-                if (nexttime > 0)
+                if (!timermsg->IsCancel())
                 {
+                    int32_t nexttime = timermsg->_func();
+                    if (nexttime > 0)
+                    {
 
+                    }
                 }
             }
+            break;
         }
-        break;
-
-    case kUserMessage:
-        UserMessage* usermsg = dynamic_cast<UserMessage*>(msg);
-        if (usermsg != nullptr)
+        case kUserMessage:
         {
-            freemsg = ProcessMsg(usermsg);
+            UserMessage* usermsg = dynamic_cast<UserMessage*>(msg);
+            if (usermsg != nullptr)
+            {
+                freemsg = ProcessMsg(usermsg);
+            }
+            break;
         }
-        break;
-
-    case kCycleMessage:
-        CycleMessage* cyclemsg = dynamic_cast<CycleMessage*>(msg);
-        if (cyclemsg != nullptr)
+        case kCycleMessage:
         {
-            ProcessMsg(cyclemsg);
+            CycleMessage* cyclemsg = dynamic_cast<CycleMessage*>(msg);
+            if (cyclemsg != nullptr)
+            {
+                ProcessMsg(cyclemsg);
+            }
+            freemsg = false;
+            break;
         }
-        freemsg = false;
-        break;
-
-    case kInsideMessage:
-        InsideMessage* insidemsg = dynamic_cast<InsideMessage*>(msg);
-        if (insidemsg != nullptr)
+        case kInsideMessage:
         {
-            freemsg = ProcessMsg(insidemsg);
+            InsideMessage* insidemsg = dynamic_cast<InsideMessage*>(msg);
+            if (insidemsg != nullptr)
+            {
+                freemsg = ProcessMsg(insidemsg);
+            }
+            break;
         }
-        break;
-
-    default:
-        freemsg = ProcessMsg(msg);
-        break;
+        default:
+            freemsg = ProcessMsg(msg);
+            break;
     }
+    return freemsg;
 }
 
 bool Service::ProcessMsg(Message* msg)
@@ -130,5 +135,5 @@ bool Service::ProcessMsg(InsideMessage* msg)
 
 bool Service::Send(int32_t sid, Message* msg)
 {
-    ServiceManager::Send(sid, msg);
+    return ServiceManager::Send(sid, msg);
 }

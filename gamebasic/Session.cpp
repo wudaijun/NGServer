@@ -2,10 +2,6 @@
 
 void Session::StartRecv()
 {
-#ifdef _DEBUG
-    cout << " ^^ CONNECTED : [" << _id << "]" << endl;
-#endif
-
     if (_run)
         return;
 
@@ -41,12 +37,6 @@ void Session::ReadComplete(const boost::system::error_code& err, size_t bytes_tr
 
 void Session::ProcessData()
 {
-#ifdef _DEBUG
-    string str(_recv_buf, _recv_off);
-    cout << " -- RECV FROM [" << _id << "]: " << str << endl;
-    SendAsync("Hello. this is Server.", strlen("Hello. this is Server."));
-#endif
-
     assert(_decoder);
     // 将数据交由解码器处理 返回处理之后的缓冲区剩余字节数
     int32_t remain = _decoder(_recv_buf,_recv_off);
@@ -120,9 +110,6 @@ void Session::DisConnect()
 {
     if (_closing_lock.TryLock())
     {
-    #ifdef _DEBUG
-        cout << " ~~ DISCONNECTED : [" << _id << "]" << endl;
-    #endif
         if (_decoder)
         {
             // 通知解码器 连接已断开 进行相关逻辑业务处理

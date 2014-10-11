@@ -16,6 +16,9 @@
 class PlayerManager : public AsyncTcpListener
 {
 public:
+    PlayerManager(IOService* ioservice)
+        :AsyncTcpListener(ioservice){}
+
     void OnConnect(const std::shared_ptr<Socket>& socket) override;
 
     void AddPlayer(const PlayerPtr& player);

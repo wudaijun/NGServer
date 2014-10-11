@@ -6,6 +6,7 @@
 #include "Message.h"
 #include "MessageQueue.h"
 #include "Locker.h"
+#include <chrono>
 
 class Service : public boost::enable_shared_from_this < Service > 
 {
@@ -19,6 +20,10 @@ public:
         return _sid;
     }
 
+    inline void SetSid(int32_t sid)
+    {
+        _sid = sid;
+    }
 public:
 
     // 接口 初始化Service
@@ -72,6 +77,14 @@ private:
     Locker _recvcheck;
 
     int32_t _sid;
+
+
+public: // 时间相关
+    typedef std::chrono::steady_clock clock;
+    static int64_t SteadyNow()
+    {
+        return clock::now().time_since_epoch().count();
+    }
 };
 
 

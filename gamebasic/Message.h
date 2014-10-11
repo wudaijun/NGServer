@@ -111,7 +111,7 @@ public:
 public:
     int32_t _srcsid;    // 源服务ID
     int32_t _dessid;    // 目标服务ID
-    int32_t _sessionid; // 会话或连接ID
+    int64_t _sessionid; // 会话或连接ID
     int32_t _msgid;     // 消息ID
 };
 
@@ -136,6 +136,8 @@ public:
     {
         return MessageType::kCycleMessage;
     }
+
+    static CycleMessage* Create(ServicePtr sptr, int32_t proid);
 
     inline bool TryLock()
     {
@@ -173,7 +175,7 @@ public:
 
 public:
     int32_t _priod;                     // 循环执行间隔
-    int32_t _nexttime;                  // 下次执行时间
+    int64_t _nexttime;                  // 下次执行时间
     std::weak_ptr<Service> _service;    // 所属Service
     Locker _locker;                     
 };
