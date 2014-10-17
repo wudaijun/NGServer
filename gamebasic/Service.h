@@ -11,6 +11,9 @@
 class Service : public boost::enable_shared_from_this < Service > 
 {
 public:
+    // 单条消息最大缓冲
+    static const int32_t kBufferSize = 65536;
+
     Service(int32_t sid) :
         _sid(sid){}
 
@@ -76,6 +79,7 @@ private:
     // 调试使用  用于确保同一时间只有一个线程在处理该Service的消息(通过 Receive 函数)
     Locker _recvcheck;
 
+protected:
     int32_t _sid;
 
 

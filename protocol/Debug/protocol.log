@@ -1,5 +1,88 @@
-﻿Build started 2014/10/11 18:11:20.
+﻿Build started 2014/10/16 12:20:42.
+     1>Project "E:\NGServer\protocol\protocol.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt customize_protocol.cpp
+         customize_protocol.cpp
+     1>e:\ngserver\protocol\serialization.h(31): error C2039: 'Write' : is not a member of 'NGServer::protocol::ProtocolReader'
+                 e:\ngserver\protocol\protocol.h(197) : see declaration of 'NGServer::protocol::ProtocolReader'
+                 e:\ngserver\protocol\serialization.h(305) : see reference to function template instantiation 'bool NGServer::protocol::Encode<S,T>(S &,const T &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolReader
+         ,            T=int64_t
+                 ]
+                 e:\ngserver\protocol\serialization.h(357) : see reference to function template instantiation 'bool NGServer::protocol::Serializer<false>::Serialize<S,T>(S &,const T &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolReader
+         ,            T=int64_t
+                 ]
+                 e:\ngserver\protocol\serialization.h(357) : see reference to function template instantiation 'bool NGServer::protocol::Serializer<false>::Serialize<S,T>(S &,const T &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolReader
+         ,            T=int64_t
+                 ]
+                 e:\ngserver\protocol\customize_protocol.cpp(6) : see reference to function template instantiation 'bool NGServer::protocol::AutoDecode<NGServer::protocol::ProtocolReader,int64_t>(S &,T &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolReader
+         ,            T=int64_t
+                 ]
+                 e:\ngserver\protocol\protocol.h(197) : see declaration of 'NGServer::protocol::ProtocolReader'
+     1>e:\ngserver\protocol\serialization.h(38): error C2039: 'Write' : is not a member of 'NGServer::protocol::ProtocolReader'
+                 e:\ngserver\protocol\protocol.h(197) : see declaration of 'NGServer::protocol::ProtocolReader'
+                 e:\ngserver\protocol\serialization.h(305) : see reference to function template instantiation 'bool NGServer::protocol::Encode<S>(S &,const std::string &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolReader
+                 ]
+                 e:\ngserver\protocol\serialization.h(357) : see reference to function template instantiation 'bool NGServer::protocol::Serializer<false>::Serialize<S,T>(S &,const T &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolReader
+         ,            T=std::string
+                 ]
+                 e:\ngserver\protocol\serialization.h(357) : see reference to function template instantiation 'bool NGServer::protocol::Serializer<false>::Serialize<S,T>(S &,const T &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolReader
+         ,            T=std::string
+                 ]
+                 e:\ngserver\protocol\customize_protocol.cpp(6) : see reference to function template instantiation 'bool NGServer::protocol::AutoDecode<NGServer::protocol::ProtocolReader,std::string>(S &,T &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolReader
+         ,            T=std::string
+                 ]
+     1>e:\ngserver\protocol\serialization.h(221): error C2338: is not trivial. need to customize
+                 e:\ngserver\protocol\serialization.h(317) : see reference to function template instantiation 'uint32_t NGServer::protocol::GetMsgSize<S,T>(S &,const T &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolSize
+         ,            T=std::string
+                 ]
+                 e:\ngserver\protocol\serialization.h(363) : see reference to function template instantiation 'uint32_t NGServer::protocol::Serializer<false>::GetSize<S,T>(S &,const T &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolSize
+         ,            T=std::string
+                 ]
+                 e:\ngserver\protocol\serialization.h(363) : see reference to function template instantiation 'uint32_t NGServer::protocol::Serializer<false>::GetSize<S,T>(S &,const T &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolSize
+         ,            T=std::string
+                 ]
+                 e:\ngserver\protocol\customize_protocol.cpp(6) : see reference to function template instantiation 'uint32_t NGServer::protocol::AutoMsgSize<NGServer::protocol::ProtocolSize,std::string>(S &,const T &)' being compiled
+                 with
+                 [
+                     S=NGServer::protocol::ProtocolSize
+         ,            T=std::string
+                 ]
+     1>e:\ngserver\protocol\serialization.h(222): error C2338: is not standard layout. need to customize
+     1>Done Building Project "E:\NGServer\protocol\protocol.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:00.03
+Time Elapsed 00:00:00.43

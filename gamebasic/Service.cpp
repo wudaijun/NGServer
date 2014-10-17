@@ -136,4 +136,4 @@ bool Service::ProcessMsg(InsideMessage* msg)
 bool Service::Send(int32_t sid, Message* msg)
 {
     return ServiceManager::Send(sid, msg);
-}
+}   

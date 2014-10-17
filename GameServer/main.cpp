@@ -2,6 +2,10 @@
 #include "../gamebasic/Session.h"
 #include "Player/PlayerManager.h"
 #include "../gamebasic/ServiceManager.h"
+#include "../protocol/protocol.h"
+
+using namespace NGServer::protocol;
+
 int main()
 {
     boost::asio::io_service ioservice;
