@@ -1,7 +1,13 @@
 #ifndef __NGSERVER_GAMESERVICE_H_INCLUDE__
 #define __NGSERVER_GAMESERVICE_H_INCLUDE__
 
-#include "../../gamebasic/Service.h"
+#include "../../gamenet/Service.h"
+#include "../../common/AgentCall.h"
+#include "../../protocol/protocol.h"
+#include "../Player/PlayerManager.h"
+
+using namespace NGServer::protocol;
+using namespace NGServer::common;
 
 /*
 *   游戏服务基类：
@@ -12,7 +18,8 @@
 
 class GameService : public Service
 {
-    // 设置关联服务
+
+#pragma region 设置关联服务
 public:
     void SetLogService(int32_t logservice_sid)
     {
@@ -23,13 +30,16 @@ public:
     {
         _dbservice_sid = dbservice_sid;
     }
+#pragma endregion
 
-    // 处理消息
+#pragma region 处理消息
 public:
     bool ProcessMsg(UserMessage* msg) override;
     bool ProcessMsg(InsideMessage* msg) override;
     
-    // 发送消息
+#pragma endregion
+
+#pragma region 发送消息
 public:
     template<typename T>
     bool SendInsideMsg(int32_t sid, int64_t sessionid, uint16_t msgid, const T& t)
@@ -119,13 +129,39 @@ public:
     // 接口 定义将数据发送给客户端的接口 可以是群发 or 单发
     virtual bool Send(const char* data, size_t len) = 0;
 
-    // 消息注册和回调机制
+#pragma endregion
+
+#pragma region 消息注册和回调机制
 public:
-    
+    enum CallBackType
+    {
+        cbPlayerAgent = 0,  // 以Player为第一个参数的回调函数
+    };
+    template<typename MsgEnum, typename F>
+    void RegistPlayer(MsgEnum msgid, F f)
+    {
+        _calltype[(uint16_t)msgid] = cbPlayerAgent;
+        _player_agent.Regist((uint16_t)msgid, f);
+    }
+
+    template<typename MsgEnum, typename F, typename ObjT>
+    void RegisterPlayer(MsgEnum msgid, F f, ObjT* obj)
+    {
+        _calltype[(uint16_t)msgid] = cbPlayerAgent;
+        _player_agent.Regist((uint16_t)msgid, f, obj);
+    }
+
+
+#pragma endregion
+
 
 private:
     int32_t _logservice_sid;
     int32_t _dbservice_sid;
+
+    CallBackType _calltype[256 * 256];
+    AgentManager<Player&, ProtocolReader> _player_agent;
+    PlayerManager _player_manager;
 };
 
 #endif

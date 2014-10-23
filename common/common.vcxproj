@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{891EC8DB-C9D5-4F32-A922-A5A5441694CE}</ProjectGuid>
+    <ProjectGuid>{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>gamebasic</RootNamespace>
+    <RootNamespace>common</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -66,13 +66,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>F:\boost_1_55_0\lib64-msvc-12.0;$(LibraryPath)</LibraryPath>
-    <IncludePath>F:\boost_1_55_0;$(IncludePath)</IncludePath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>F:\boost_1_55_0\lib64-msvc-12.0;$(LibraryPath)</LibraryPath>
-    <IncludePath>F:\boost_1_55_0;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)..\lib\</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
@@ -140,21 +134,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AsyncTcpListener.h" />
-    <ClInclude Include="Locker.h" />
-    <ClInclude Include="Message.h" />
-    <ClInclude Include="MessageQueue.h" />
-    <ClInclude Include="NetHead.h" />
-    <ClInclude Include="Service.h" />
-    <ClInclude Include="ServiceManager.h" />
-    <ClInclude Include="ServiceQueue.h" />
-    <ClInclude Include="Session.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="AsyncTcpListener.cpp" />
-    <ClCompile Include="Service.cpp" />
-    <ClCompile Include="ServiceManager.cpp" />
-    <ClCompile Include="Session.cpp" />
+    <ClInclude Include="AgentCall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

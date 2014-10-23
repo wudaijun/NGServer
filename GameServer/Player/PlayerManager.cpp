@@ -1,6 +1,6 @@
 #include "PlayerManager.h"
-#include "../../gamebasic/Session.h"
-#include "../../gamebasic/ServiceManager.h"
+#include "../../gamenet/Session.h"
+#include "../../gamenet/ServiceManager.h"
 
 void PlayerManager::OnConnect(const std::shared_ptr<Socket>& socket)
 {
@@ -24,4 +24,9 @@ void PlayerManager::OnConnect(const std::shared_ptr<Socket>& socket)
 void PlayerManager::AddPlayer(const PlayerPtr& player)
 {
     _all_players[player->GetConnId()] = player;
+}
+
+void PlayerManager::RemovePlayer(int32_t connid)
+{
+    _all_players.erase(connid);
 }

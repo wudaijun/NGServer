@@ -88,15 +88,17 @@ public:
     size_t _len;
 };
 
-// 多一个客户端指针的客户端消息
+// 
 template< typename T >
 class UserMessageT : public UserMessage
 {
 public:
-    UserMessageT(const char* data, size_t len, T* user) :
+    UserMessageT(const char* data, size_t len, T user) :
         UserMessage(data, len), _user(user){}
+
+    inline T GetClient() const { return _user;  }
 public:
-    T* _user;
+    T _user;
 };
 
 // 服务之间通信的消息

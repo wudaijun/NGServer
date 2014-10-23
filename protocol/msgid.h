@@ -6,7 +6,7 @@ namespace NGServer
 namespace protocol
 {
 
-#define NETMSGID(id) static const uint16_t msgid = static_cast<uint16_t> MsgId::id; 
+#define NETMSGID(id) static const uint16_t msgid = static_cast<uint16_t>(MsgId::id); 
 
 enum MsgId : uint16_t
 { 

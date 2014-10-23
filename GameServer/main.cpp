@@ -1,7 +1,7 @@
-#include "../gamebasic/AsyncTcpListener.h"
-#include "../gamebasic/Session.h"
+#include "../gamenet/AsyncTcpListener.h"
+#include "../gamenet/Session.h"
 #include "Player/PlayerManager.h"
-#include "../gamebasic/ServiceManager.h"
+#include "../gamenet/ServiceManager.h"
 #include "../protocol/protocol.h"
 
 using namespace NGServer::protocol;

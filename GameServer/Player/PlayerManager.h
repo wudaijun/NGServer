@@ -1,7 +1,7 @@
 #ifndef __NGSERVER_PLAYERMANAGER_H_INCLUDE__
 #define __NGSERVER_PLAYERMANAGER_H_INCLUDE__
 
-#include "../../gamebasic/AsyncTcpListener.h"
+#include "../../gamenet/AsyncTcpListener.h"
 #include "Player.h"
 #include <map>
 /*
@@ -22,6 +22,7 @@ public:
     void OnConnect(const std::shared_ptr<Socket>& socket) override;
 
     void AddPlayer(const PlayerPtr& player);
+    void RemovePlayer(int32_t connid);
 private:
     // connid -> Player
     std::map<int32_t, PlayerPtr> _all_players;

@@ -5,11 +5,13 @@ VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameServer", "GameServer\GameServer.vcxproj", "{D75519AD-6C4F-4632-8F77-FB0C9F1B64B3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gamebasic", "gamebasic\gamebasic.vcxproj", "{891EC8DB-C9D5-4F32-A922-A5A5441694CE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gamenet", "gamebasic\gamebasic.vcxproj", "{891EC8DB-C9D5-4F32-A922-A5A5441694CE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{C2BA2F5F-85C8-4FFD-9419-3E2794179E1B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "protocol", "protocol\protocol.vcxproj", "{1B0455FA-60EF-401F-92DF-EFB75F14394C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "common\common.vcxproj", "{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +58,17 @@ Global
 		{1B0455FA-60EF-401F-92DF-EFB75F14394C}.Release|Win32.ActiveCfg = Release|Win32
 		{1B0455FA-60EF-401F-92DF-EFB75F14394C}.Release|Win32.Build.0 = Release|Win32
 		{1B0455FA-60EF-401F-92DF-EFB75F14394C}.Release|x64.ActiveCfg = Release|Win32
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}.Debug|Win32.Build.0 = Debug|Win32
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}.Debug|x64.ActiveCfg = Debug|x64
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}.Debug|x64.Build.0 = Debug|x64
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}.Release|Win32.ActiveCfg = Release|Win32
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}.Release|Win32.Build.0 = Release|Win32
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,5 +76,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{891EC8DB-C9D5-4F32-A922-A5A5441694CE} = {C2BA2F5F-85C8-4FFD-9419-3E2794179E1B}
 		{1B0455FA-60EF-401F-92DF-EFB75F14394C} = {C2BA2F5F-85C8-4FFD-9419-3E2794179E1B}
+		{DDA32BFF-B49B-49EA-9CF8-1E9DB3F96255} = {C2BA2F5F-85C8-4FFD-9419-3E2794179E1B}
 	EndGlobalSection
 EndGlobal

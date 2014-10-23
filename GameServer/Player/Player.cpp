@@ -1,6 +1,6 @@
 #include "Player.h"
-#include "../../gamebasic/Message.h"
-#include "../../gamebasic/ServiceManager.h"
+#include "../../gamenet/Message.h"
+#include "../../gamenet/ServiceManager.h"
 
 int32_t Player::Decode(const char* data, size_t len)
 {
@@ -20,12 +20,17 @@ int32_t Player::Decode(const char* data, size_t len)
 #endif
 
     // 发送到默认Service
-    UserMessageT<Player>* msg = new UserMessageT<Player>(data, len, this);
-    if (!ServiceManager::Send(_default_sid, msg))
+    UserMessageT<PlayerPtr>* msg = new UserMessageT<PlayerPtr>(data, len, this->shared_from_this());
+    if (!ServiceManager::Send(_sid, msg))
     {
         // 服务器主动断线
         return -1;
     }
 
     return 0;
+}
+
+void Player::Offline()
+{
+    
 }
