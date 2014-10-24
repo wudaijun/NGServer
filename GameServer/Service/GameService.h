@@ -1,7 +1,7 @@
 #ifndef __NGSERVER_GAMESERVICE_H_INCLUDE__
 #define __NGSERVER_GAMESERVICE_H_INCLUDE__
 
-#include "../../gamenet/Service.h"
+#include "../../gamebasic/Service.h"
 #include "../../common/AgentCall.h"
 #include "../../protocol/protocol.h"
 #include "../Player/PlayerManager.h"
@@ -21,6 +21,9 @@ class GameService : public Service
 
 #pragma region 设置关联服务
 public:
+    GameService(int32_t sid) :
+        Service(sid){}
+
     void SetLogService(int32_t logservice_sid)
     {
         _logservice_sid = logservice_sid;
@@ -29,6 +32,11 @@ public:
     void SetDBService(int32_t dbservice_sid)
     {
         _dbservice_sid = dbservice_sid;
+    }
+
+    void SetPlayerManager(PlayerManager* manager)
+    {
+        _player_manager = manager;
     }
 #pragma endregion
 
@@ -145,23 +153,37 @@ public:
     }
 
     template<typename MsgEnum, typename F, typename ObjT>
-    void RegisterPlayer(MsgEnum msgid, F f, ObjT* obj)
+    void RegistPlayer(MsgEnum msgid, F f, ObjT* obj)
     {
         _calltype[(uint16_t)msgid] = cbPlayerAgent;
         _player_agent.Regist((uint16_t)msgid, f, obj);
+    }
+
+    template<typename R, typename ObjT, typename T1, typename T2>
+    void RegistPlayer(R(ObjT::*f)(T1, T2), ObjT* obj)
+    {
+        uint16_t msgid = _player_agent.RegistMsg(f, obj);
+        _calltype[msgid] = cbPlayerAgent;
+    }
+
+    template < typename R, typename T1, typename T2 > 
+    void RegistPlayer(R(*f)(T1 ,T2))
+    {
+        uint16_t msgid = _player_agent.RegistMsg(f);
+        _calltype[msgid] = cbPlayerAgent;
     }
 
 
 #pragma endregion
 
 
-private:
+protected:
     int32_t _logservice_sid;
     int32_t _dbservice_sid;
 
     CallBackType _calltype[256 * 256];
     AgentManager<Player&, ProtocolReader> _player_agent;
-    PlayerManager _player_manager;
+    PlayerManager* _player_manager;
 };
 
 #endif

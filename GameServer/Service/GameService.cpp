@@ -1,4 +1,4 @@
-#include "../../gamenet/ServiceManager.h"
+#include "../../gamebasic/ServiceManager.h"
 #include "GameService.h"
 
 bool GameService::ProcessMsg(UserMessage* msg)
@@ -20,7 +20,7 @@ bool GameService::ProcessMsg(UserMessage* msg)
     if (msg->_len == 0)
     {
         player->Offline();
-        _player_manager.RemovePlayer(player->GetConnId());
+        _player_manager->RemovePlayer(player->GetConnId());
         return true;
     }
 
@@ -35,5 +35,10 @@ bool GameService::ProcessMsg(UserMessage* msg)
         break;
     }
 
+    return true;
+}
+
+bool GameService::ProcessMsg(InsideMessage* msg)
+{
     return true;
 }

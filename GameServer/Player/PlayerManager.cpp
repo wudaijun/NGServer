@@ -1,6 +1,7 @@
 #include "PlayerManager.h"
-#include "../../gamenet/Session.h"
-#include "../../gamenet/ServiceManager.h"
+#include "../../gamebasic/Session.h"
+#include "../../gamebasic/ServiceManager.h"
+#include "../Service/LoginService.h"
 
 void PlayerManager::OnConnect(const std::shared_ptr<Socket>& socket)
 {
@@ -11,7 +12,7 @@ void PlayerManager::OnConnect(const std::shared_ptr<Socket>& socket)
 
     // 创建Player和Session 并将Player和Session关联
     std::shared_ptr<Session> session = std::make_shared<Session>(socket, id);
-    std::shared_ptr<Player> player = std::make_shared<Player>(session, ServiceManager::GetDefaultSid());
+    std::shared_ptr<Player> player = std::make_shared<Player>(session, LoginService::sDefaultSid);
     std::function<int32_t(const char*, size_t len)> decoder = std::bind(&Player::Decode, player, std::placeholders::_1, std::placeholders::_2);
     player->SetConnId(id);
     session->SetDecoder(decoder);

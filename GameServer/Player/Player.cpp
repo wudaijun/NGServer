@@ -1,6 +1,6 @@
 #include "Player.h"
-#include "../../gamenet/Message.h"
-#include "../../gamenet/ServiceManager.h"
+#include "../../gamebasic/Message.h"
+#include "../../gamebasic/ServiceManager.h"
 
 int32_t Player::Decode(const char* data, size_t len)
 {

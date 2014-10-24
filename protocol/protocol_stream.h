@@ -81,7 +81,7 @@ public:
 
 protected:
     ProtocolStream(char* buf, uint32_t len) :
-        _capacity(len), _buf(buf), _offset()
+        _capacity(len), _buf(buf), _offset(kHeadLen+kMsgIdLen)
     {
     }
 
@@ -148,7 +148,6 @@ public:
     inline bool Write(const std::string& v)     { return WriteString(v); }
     inline bool Write(const std::wstring& v)    { return WriteString(v); }
 
-private:
     // 将消息长度和消息ID写入头部 返回缓冲区当前大小
     uint32_t WriteHead(uint16_t msgid)
     {
@@ -157,6 +156,8 @@ private:
         *(p + 1) = msgid;
         return _offset;
     }
+
+private:
 
     bool WriteString(const std::string& v)
     {

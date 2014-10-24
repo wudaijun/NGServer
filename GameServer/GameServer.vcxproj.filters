@@ -11,6 +11,9 @@
     <ClCompile Include="Service\GameService.cpp">
       <Filter>Service</Filter>
     </ClCompile>
+    <ClCompile Include="Service\LoginService.cpp">
+      <Filter>Service</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player\Player.h">
@@ -23,6 +26,15 @@
       <Filter>Service</Filter>
     </ClInclude>
     <ClInclude Include="Service\LoginService.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Service\LogService.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Service\MapService.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Service\DBService.h">
       <Filter>Service</Filter>
     </ClInclude>
   </ItemGroup>

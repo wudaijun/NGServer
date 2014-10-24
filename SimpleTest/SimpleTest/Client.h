@@ -20,6 +20,18 @@ public:
 
     void SendData(const char* data, size_t len=0);
 
+    template<typename MsgT>
+    void SendMsg(MsgT msg)
+    {
+        const static int kBuffSize = 256 * 256;
+        char buff[kBuffSize];
+        ProtocolWriter writer(buff, kBuffSize);
+        
+        AutoEncode(writer, msg);
+        size_t len = writer.WriteHead(MsgT::msgid);
+        SendData(buff, len);
+    }
+
     void SendComplete(const boost::system::error_code& err,  size_t bytes_transferred);
 
     void RecvComplete(const boost::system::error_code& err, size_t bytes_transferred);
