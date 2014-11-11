@@ -2,7 +2,8 @@
 #define __NGSERVER_GAMESERVICE_H_INCLUDE__
 
 #include "../../gamebasic/Service.h"
-#include "../../common/AgentCall.h"
+#include "../../common/AutoCall.h"
+#include "../../gamebasic/ProxyCall.h"
 #include "../../protocol/protocol.h"
 #include "../Player/PlayerManager.h"
 
@@ -158,7 +159,8 @@ public:
         _calltype[(uint16_t)msgid] = cbPlayerAgent;
         _player_agent.Regist((uint16_t)msgid, f, obj);
     }
-
+    
+    /*
     template<typename R, typename ObjT, typename T1, typename T2>
     void RegistPlayer(R(ObjT::*f)(T1, T2), ObjT* obj)
     {
@@ -172,6 +174,7 @@ public:
         uint16_t msgid = _player_agent.RegistMsg(f);
         _calltype[msgid] = cbPlayerAgent;
     }
+    */
 
 
 #pragma endregion
@@ -182,7 +185,7 @@ protected:
     int32_t _dbservice_sid;
 
     CallBackType _calltype[256 * 256];
-    AgentManager<Player&, ProtocolReader> _player_agent;
+    DelegateManager<std::pair<Player&, ProtocolReader&>> _player_agent;
     PlayerManager* _player_manager;
 };
 

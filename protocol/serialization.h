@@ -176,8 +176,8 @@ namespace protocol
         template<typename S, typename T>
         bool DecodeArray(S& s, T* arr, size_t arraySize)
         {
-            uint16_t i = static_cast<uint16_t>arraySize;
-            for (uint16_t i = 0; i < arraySize; i++)
+            uint16_t size = static_cast<uint16_t>arraySize;
+            for (uint16_t i = 0; i < size; i++)
             {
                 if (!AutoDecode(s, *(arr + i)))
                     return false;

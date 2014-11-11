@@ -23,23 +23,33 @@ void Session::ReadComplete(const boost::system::error_code& err, size_t bytes_tr
     if (err || bytes_transferred == 0)
     {
         DisConnect();
-        _socket->close();
         return;
     }
     _recv_total += bytes_transferred;
     _recv_off += bytes_transferred;
 
     // 处理数据
-    ProcessData();
-    // 继续接收数据
-    AsyncReadSome();
+    if (ProcessData())
+    {
+        // 继续接收数据
+        AsyncReadSome();
+    }
 }
 
-void Session::ProcessData()
+// 对缓冲区中的数据解包 返回false则断开连接
+bool Session::ProcessData()
 {
     assert(_decoder);
-    // 将数据交由解码器处理 返回处理之后的缓冲区剩余字节数
+    // 将数据交由解码器处理 返回处理之后的缓冲区剩余字节数 返回-1表示服务器主动断线
     int32_t remain = _decoder(_recv_buf,_recv_off);
+
+    // 服务器断开连接
+    if (remain < 0)
+    {
+        ShutDown(ShutDownType::shutdown_receive);
+        DisConnect();
+        return false;
+    }
 
     // 处理之后的偏移
     if (remain > 0 && remain < kBufferSize)
@@ -52,6 +62,7 @@ void Session::ProcessData()
     {
         _recv_off = 0;
     }
+    return true;
 }
 
 // 发送数据
@@ -102,6 +113,16 @@ void Session::SendComplete(const boost::system::error_code& err, size_t bytes_to
     else
     {
         _sending_lock.UnLock();
+    }
+}
+
+// 关闭套接字连接
+void Session::ShutDown(ShutDownType stype)
+{
+    if (_socket != nullptr && _socket->is_open())
+    {
+        _socket->shutdown(stype);
+        _socket->close();
     }
 }
 

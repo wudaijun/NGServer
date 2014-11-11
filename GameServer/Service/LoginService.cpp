@@ -30,7 +30,7 @@ void LoginService::StartMapServer(boost::asio::io_service* io)
 bool LoginService::Init()
 {
     //RegistPlayer(C2S_Login::msgid, &LoginService::OnLogin, this);
-    RegistPlayer(&LoginService::OnLogin, this);
+    RegistPlayer(C2S_Login::msgid, &LoginService::OnLogin, this);
 
     return true;
 }

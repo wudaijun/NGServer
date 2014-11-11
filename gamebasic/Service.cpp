@@ -27,10 +27,8 @@ bool Service::Receive()
     }
 #endif
     std::vector<Message*>* msgs = _msgqueue.PopAll();
-    size_t size = msgs->size();
-    for (size_t i = 0; i < size; i++)
+    for (auto msg : *msgs)
     {
-        Message* msg = (*msgs)[i];
         std::unique_ptr<Message> autodel(msg);
         if (!ReceiveMsg(msg))
         {

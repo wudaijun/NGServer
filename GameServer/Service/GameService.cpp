@@ -31,7 +31,8 @@ bool GameService::ProcessMsg(UserMessage* msg)
     switch (cbType)
     {
     case cbPlayerAgent:
-        _player_agent.Call(msgid, *player, reader);
+        auto arg = std::pair<Player&, ProtocolReader&>(*player, reader);
+        _player_agent.Call(msgid, arg);
         break;
     }
 

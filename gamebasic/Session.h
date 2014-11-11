@@ -3,6 +3,9 @@
 #include "NetHead.h"
 #include "MessageQueue.h"
 
+typedef boost::asio::socket_base::shutdown_type ShutDownType;
+
+
 /*
 *   文件： Session.h
 *   功能： 定义Session类
@@ -32,6 +35,10 @@ public:
         _decoder = decoder;
     }
 
+    // 关闭套接字连接
+    void ShutDown(ShutDownType stype);
+
+    // 通知服务器断开连接
     void DisConnect();
 private:
     // 异步读取数据
@@ -39,7 +46,7 @@ private:
     // 读取完成：处理数据并继续读取
     void ReadComplete(const boost::system::error_code& err, size_t bytes_transferred);
     // 处理接收缓冲区的数据
-    void ProcessData();
+    bool ProcessData();
 
     // 发送数据 同一时刻只有一个线程执行该函数发送数据
     void SendData(const char* data, size_t len);

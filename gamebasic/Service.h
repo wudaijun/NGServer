@@ -67,6 +67,7 @@ public:
         msg->_sessionid = sessionid;
         msg->_msgid = msgid;
         msg->_data = t;
+        Service::Send(sid, msg);
     }
 private:
     // 处理单条消息 返回值代表该消息是否需要被删除 
