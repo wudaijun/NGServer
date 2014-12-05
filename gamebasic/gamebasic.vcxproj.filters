@@ -45,7 +45,7 @@
     <ClInclude Include="ServiceQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProxyCall.h">
+    <ClInclude Include="AutoCallSpecial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

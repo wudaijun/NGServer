@@ -107,7 +107,7 @@ public:
 };
 
 /*******************************************************************************************************/
-/*   特例化Decoder: std::pair<T1, ProtocolReader> T1是响应函数的第一个参数 其他参数从ProtocolReader中读取 */
+/*   特例化Decoder: std::pair<T1, ProtocolReader&> T1是响应函数的第一个参数 其他参数从ProtocolReader中读取 */
 /*******************************************************************************************************/
 // 带一个参数 T1
 template<typename T1, typename FuncT>
@@ -147,6 +147,5 @@ public:
         return true;
     }
 };
-
 
 #endif

@@ -76,6 +76,7 @@
     <OutDir>$(ProjectDir)..\run\</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
     <LibraryPath>F:\boost_1_55_0\lib64-msvc-12.0;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -106,6 +107,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,7 +154,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Player\Player.h" />
-    <ClInclude Include="Player\PlayerManager.h" />
+    <ClInclude Include="Player\PlayerSession.h" />
+    <ClInclude Include="Player\SessionManager.h" />
     <ClInclude Include="Service\DBService.h" />
     <ClInclude Include="Service\GameService.h" />
     <ClInclude Include="Service\LoginService.h" />
@@ -162,9 +165,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player\Player.cpp" />
-    <ClCompile Include="Player\PlayerManager.cpp" />
+    <ClCompile Include="Player\PlayerSession.cpp" />
+    <ClCompile Include="Player\SessionManager.cpp" />
     <ClCompile Include="Service\GameService.cpp" />
     <ClCompile Include="Service\LoginService.cpp" />
+    <ClCompile Include="Service\MapService.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

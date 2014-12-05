@@ -300,7 +300,29 @@ public:
         auto bindf = std::bind(f, obj, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
         return Regist(id, CreateDelegate3<Decoder, T1, T2, T3>(bindf));
     }
- 
+
+    // 完全匹配  成员函数  该成员函数的this指针从Decoder中读取
+    // 这里必须要使用bind函数 预留出this指针的位置
+    template<typename R, typename ObjT>
+    DelegatePtr Regist(uint16_t id, R(ObjT::*f)())
+    {
+        auto bindf = std::bind(f, placeholders::_1);
+        return Regist(id, CreateDelegate1<Decoder, ObjT*>(bindf));
+    }
+
+    template<typename R, typename ObjT, typename T1>
+    DelegatePtr Regist(uint16_t id, R(ObjT::*f)(T1))
+    {
+        auto bindf = std::bind(f, placeholders::_1, placeholders::_2);
+        return Regist(id, CreateDelegate2<Decoder, ObjT*, T1>(bindf));
+    }
+
+    template<typename R, typename ObjT, typename T1, typename T2>
+    DelegatePtr Regist(uint16_t id, R(ObjT::*f)(T1, T2))
+    {
+        auto bindf = std::bind(f, placeholders::_1, placeholders::_2, placeholders::_3);
+        return Regist(id, CreateDelegate3<Decoder, ObjT*, T1, T2>(bindf));
+    }
 };
 
 }

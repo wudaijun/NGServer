@@ -1,11 +1,11 @@
 #ifndef __NGSERVER_GAMESERVICE_H_INCLUDE__
 #define __NGSERVER_GAMESERVICE_H_INCLUDE__
 
-#include "../../gamebasic/Service.h"
-#include "../../common/AutoCall.h"
-#include "../../gamebasic/ProxyCall.h"
-#include "../../protocol/protocol.h"
-#include "../Player/PlayerManager.h"
+#include "gamebasic/Service.h"
+#include "common/AutoCall.h"
+#include "gamebasic/AutoCallSpecial.h"
+#include "protocol/protocol.h"
+#include "../Player/SessionManager.h"
 
 using namespace NGServer::protocol;
 using namespace NGServer::common;
@@ -35,15 +35,15 @@ public:
         _dbservice_sid = dbservice_sid;
     }
 
-    void SetPlayerManager(PlayerManager* manager)
+    void SetSessionManager(SessionManager* manager)
     {
-        _player_manager = manager;
+        _session_manager = manager;
     }
 #pragma endregion
 
 #pragma region 处理消息
 public:
-    bool ProcessMsg(UserMessage* msg) override;
+
     bool ProcessMsg(InsideMessage* msg) override;
     
 #pragma endregion
@@ -144,35 +144,23 @@ public:
 public:
     enum CallBackType
     {
-        cbPlayerAgent = 0,  // 以Player为第一个参数的回调函数
+        cbPlayerDelegate = 1,  // 以Player*为第一个参数的回调函数
+        cbPlayerMethod   = 2, // 回调Player的方法
+        cbSessioDelegate = 3, // 回调以PlayerSession*为第一个参数的回调函数
     };
-    template<typename MsgEnum, typename F>
-    void RegistPlayer(MsgEnum msgid, F f)
-    {
-        _calltype[(uint16_t)msgid] = cbPlayerAgent;
-        _player_agent.Regist((uint16_t)msgid, f);
-    }
-
-    template<typename MsgEnum, typename F, typename ObjT>
-    void RegistPlayer(MsgEnum msgid, F f, ObjT* obj)
-    {
-        _calltype[(uint16_t)msgid] = cbPlayerAgent;
-        _player_agent.Regist((uint16_t)msgid, f, obj);
-    }
-    
     /*
     template<typename R, typename ObjT, typename T1, typename T2>
     void RegistPlayer(R(ObjT::*f)(T1, T2), ObjT* obj)
     {
-        uint16_t msgid = _player_agent.RegistMsg(f, obj);
-        _calltype[msgid] = cbPlayerAgent;
+        uint16_t msgid = _player_delegate.RegistMsg(f, obj);
+        _calltype[msgid] = cbPlayerDelegate;
     }
 
     template < typename R, typename T1, typename T2 > 
     void RegistPlayer(R(*f)(T1 ,T2))
     {
-        uint16_t msgid = _player_agent.RegistMsg(f);
-        _calltype[msgid] = cbPlayerAgent;
+        uint16_t msgid = _player_delegate.RegistMsg(f);
+        _calltype[msgid] = cbPlayerDelegate;
     }
     */
 
@@ -185,8 +173,8 @@ protected:
     int32_t _dbservice_sid;
 
     CallBackType _calltype[256 * 256];
-    DelegateManager<std::pair<Player&, ProtocolReader&>> _player_agent;
-    PlayerManager* _player_manager;
+
+    SessionManager* _session_manager;
 };
 
 #endif

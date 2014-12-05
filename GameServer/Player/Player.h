@@ -3,11 +3,13 @@
 
 #include "../../gamebasic/NetHead.h"
 #include "../../gamebasic/Session.h"
-
+#include "../../protocol/protocol.h"
 /*
 *   Player 代表一个玩家  负责玩家具体数据和逻辑交互
 *
 */
+
+using namespace NGServer::protocol;
 
 class Player : public std::enable_shared_from_this<Player>
 {
@@ -42,6 +44,12 @@ public:
 
     // 作下线处理
     void Offline();
+
+public:
+    void OnLogin(C2S_Login& msg)
+    {
+
+    }
 
 public:
     string _name;

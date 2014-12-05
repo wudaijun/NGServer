@@ -1,16 +1,17 @@
-#include "Player.h"
-#include "../../gamebasic/Message.h"
-#include "../../gamebasic/ServiceManager.h"
-#include "../../protocol/protocol.h"
-using namespace NGServer::protocol;
+#include "PlayerSession.h"
+#include "gamebasic/ServiceManager.h"
+#include "gamebasic/Message.h"
 
-int32_t Player::Decode(const char* data, size_t len)
+// 解码原始数据 将数据由网络IO转向逻辑层
+int32_t PlayerSession::Decode(const char* data, int32_t len)
 {
+    PlayerSessionPtr _this = std::dynamic_pointer_cast<PlayerSession>(this->shared_from_this());
+
     // 客户端断线
     if (data == nullptr || len == 0)
     {
         // 通知业务逻辑层 处理下线逻辑
-        Message* msg = new UserMessageT<PlayerPtr>(data, len, shared_from_this());
+        Message* msg = new UserMessageT<PlayerSessionPtr>(data, len, _this);
         ServiceManager::Send(_sid, msg);
         return 0;
     }
@@ -28,7 +29,7 @@ int32_t Player::Decode(const char* data, size_t len)
         }
 
         // 发送到Service框架层
-        Message* msg = new UserMessageT<PlayerPtr>(buff, msgLen, shared_from_this());
+        Message* msg = new UserMessageT<PlayerSessionPtr>(buff, msgLen, _this);
         if (!ServiceManager::Send(_sid, msg))
         {
             // 服务器主动断线
@@ -42,7 +43,3 @@ int32_t Player::Decode(const char* data, size_t len)
 
 }
 
-void Player::Offline()
-{
-    
-}

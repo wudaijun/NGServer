@@ -24,6 +24,8 @@ public:
     Session(const std::shared_ptr<Socket> socket, int32_t conn_id)
         : _socket(socket), _id(conn_id), _send_buf(4*kBufferSize){}
 
+    virtual ~Session(){}
+
     // Æô¶¯»á»°
     void StartRecv();
 

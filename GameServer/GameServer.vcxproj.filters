@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player\PlayerManager.cpp">
-      <Filter>Player</Filter>
-    </ClCompile>
     <ClCompile Include="Player\Player.cpp">
       <Filter>Player</Filter>
     </ClCompile>
@@ -14,12 +11,18 @@
     <ClCompile Include="Service\LoginService.cpp">
       <Filter>Service</Filter>
     </ClCompile>
+    <ClCompile Include="Player\SessionManager.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\PlayerSession.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Service\MapService.cpp">
+      <Filter>Service</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player\Player.h">
-      <Filter>Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Player\PlayerManager.h">
       <Filter>Player</Filter>
     </ClInclude>
     <ClInclude Include="Service\GameService.h">
@@ -36,6 +39,12 @@
     </ClInclude>
     <ClInclude Include="Service\DBService.h">
       <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\SessionManager.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\PlayerSession.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
