@@ -114,7 +114,7 @@ public:
     {
         if (AutoEncode(*this, t))
         {
-            return WriteHead(t::msgid);
+            return WriteHead(MsgT::msgid);
         }
         return 0;
     }

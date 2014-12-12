@@ -24,5 +24,8 @@
     <ClInclude Include="AutoCall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Locker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

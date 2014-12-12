@@ -5,7 +5,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/bind.hpp>
-#include "Locker.h"
+#include "../common/Locker.h"
 
 
 typedef boost::asio::io_service IOService;

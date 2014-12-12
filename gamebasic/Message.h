@@ -1,7 +1,7 @@
 #ifndef __NGSERVER_MESSAGE_H_INCLUDE__
 #define __NGSERVER_MESSAGE_H_INCLUDE__
 #include <stdint.h>
-#include "Locker.h"
+#include "../common/Locker.h"
 #include <boost/weak_ptr.hpp>
 
 /*
@@ -130,11 +130,10 @@ public:
 
 // 循环执行的消息
 class Service;
-typedef std::shared_ptr<Service> ServicePtr;
 class CycleMessage : public Message
 {
 public:
-    CycleMessage(const ServicePtr& s, int64_t t, int32_t priod)
+    CycleMessage(const std::shared_ptr<Service> s, int64_t t, int32_t priod)
         : _service(s), _nexttime(t), _priod(priod){}
 
     MessageType GetType()  const override
@@ -142,7 +141,7 @@ public:
         return MessageType::kCycleMessage;
     }
 
-    static CycleMessage* Create(ServicePtr sptr, int32_t proid);
+    static CycleMessage* Create(std::shared_ptr<Service> sptr, int32_t proid);
 
     inline bool TryLock()
     {

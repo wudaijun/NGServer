@@ -2,7 +2,22 @@
 #include "gamebasic/ServiceManager.h"
 #include "gamebasic/Message.h"
 
+#include <iostream>
+
+PlayerSession::PlayerSession(const std::shared_ptr<Socket> socket, int32_t conn_id)
+    :Session(socket, conn_id)
+{
+    //std::cout << "PlayerSession" << std::endl;
+}
+
+PlayerSession::~PlayerSession()
+{
+    // std::cout << "~PlayerSession" << std::endl;
+}
+
 // 解码原始数据 将数据由网络IO转向逻辑层
+// 返回值： >=0 : 缓冲区经处理之后剩余的字节数
+//          <0 : 服务器端主动断线(对应Service断线或者发送消息到逻辑层失败)
 int32_t PlayerSession::Decode(const char* data, int32_t len)
 {
     PlayerSessionPtr _this = std::dynamic_pointer_cast<PlayerSession>(this->shared_from_this());

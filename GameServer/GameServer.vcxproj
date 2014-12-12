@@ -107,7 +107,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\GameServer</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,21 +155,24 @@
   <ItemGroup>
     <ClInclude Include="Player\Player.h" />
     <ClInclude Include="Player\PlayerSession.h" />
-    <ClInclude Include="Player\SessionManager.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="Service\DBService.h" />
     <ClInclude Include="Service\GameService.h" />
     <ClInclude Include="Service\LoginService.h" />
     <ClInclude Include="Service\LogService.h" />
     <ClInclude Include="Service\MapService.h" />
+    <ClInclude Include="SessionManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Player\PlayerSession.cpp" />
-    <ClCompile Include="Player\SessionManager.cpp" />
+    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Service\DBService.cpp" />
     <ClCompile Include="Service\GameService.cpp" />
     <ClCompile Include="Service\LoginService.cpp" />
     <ClCompile Include="Service\MapService.cpp" />
+    <ClCompile Include="SessionManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

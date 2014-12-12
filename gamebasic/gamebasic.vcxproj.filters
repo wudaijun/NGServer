@@ -27,9 +27,6 @@
     <ClInclude Include="NetHead.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Locker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Session.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -1,29 +1,61 @@
 
-#include "Client.h"
+#include "LogicClient.h"
 #include "../../protocol/protocol.h"
+#include <iostream>
+#include <fstream>
+#include "RobotsManager.h"
+#include <conio.h>
 
 using namespace NGServer::protocol;
-int main()
+using namespace std;
+
+void Usage()
 {
-    IOService io;
+}
+
+void GetParam(string& server_address, short& server_port, int& num_of_robot, int& login_opt)
+{
     /*
-    TcpClient* cls[1000];
-    for (int i = 1; i < 1000; i++)
-    {
-        cls[i] = new TcpClient(&io, i);
-        if (cls[i]->ConnectToServer("127.0.0.1", 23456))
-            cls[i]->SendData("Hi. I Am Clinet.! ");
-    }
+    cout << "服务器地址: \n";
+    cin >> server_address;
+
+    cout << "服务器端口: \n";
+    cin >> server_port;
+
+    cout << "机器人数量: \n";
+    cin >> num_of_robot;
+    assert(num_of_robot > 0 && num_of_robot < 10000);
+
+    cout << "登录选项： 0 注册 1 登录 ： \n";
+    cin >> login_opt;
     */
     
-    C2S_Login msg;
-    msg.name = "wudaijun";
-    msg.pwd = "123";
+    server_address = "127.0.0.1";
+    server_port = 23456;
+    login_opt = 0;
+    num_of_robot = 1;
+    
+}
 
-    TcpClient cls(&io, 1);
-    cls.ConnectToServer("127.0.0.1", 23456);
-    cls.SendMsg(msg);
+int main(int argc, char* argv[])
+{
+    string server_address;
+    short server_port;
+    int num_of_robot;
+    int login_opt = 0;
+
+    GetParam(server_address, server_port, num_of_robot, login_opt);
+
+    IOService io;
+    for (int i = 0; i < num_of_robot; i++)
+    {
+        std::shared_ptr<LogicClient> robot = std::make_shared<LogicClient>(&io, 1);
+        //RobotsManager::GetInstance().AddRobot(robot);
+        robot->SetServAddress(server_address, server_port);
+        robot->Login();
+    }
 
     io.run();
+
     return 0;
 }

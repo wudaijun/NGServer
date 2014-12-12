@@ -23,6 +23,10 @@ public:
 
     void StartMapServer(boost::asio::io_service* io);
 
+    bool IsAllOffline();
+
+    int32_t GetCurOnline();
+
     bool Send(const char* data, size_t len) override
     {
         return true;
@@ -30,40 +34,19 @@ public:
 
     static uint16_t sDefaultSid;
 
-#pragma region 注册回调
-    template<typename MsgEnum, typename F>
-    void RegistSession(MsgEnum msgid, F f)
-    {
-        _calltype[(uint16_t)msgid] = CallBackType::cbSessioDelegate;
-        _session_agent.Regist((uint16_t)msgid, f);
-    }
-
-    template<typename MsgEnum, typename F, typename ObjT>
-    void RegistSession(MsgEnum msgid, F f, ObjT* obj)
-    {
-        _calltype[(uint16_t)msgid] = CallBackType::cbSessioDelegate;
-        _session_agent.Regist((uint16_t)msgid, f, obj);
-    }
-#pragma endregion
-
-#pragma region 处理消息
-
-    bool ProcessMsg(UserMessage* msg) override;
-
-#pragma endregion
 
 #pragma region 回调函数
 public:
-    void OnLogin(PlayerSession* player, C2S_Login& msg);
+    void OnPlayerLogin(PlayerSession* session, C2S_Login& msg);
+    void OnDBPlayerLogin(PlayerSession* session, D2S_PlayerLoginResult& msg);
+    void OnPlayerLogout(PlayerSession* session) override;
 #pragma endregion
 
 private:
     // 该LoginService管理的所有MapService
     std::vector<MapServicePtr> _mapservices;
-    // 正在登录中的用户
-    std::unordered_map<int32_t, PlayerSessionPtr> _logging;
-
-    DelegateManager<std::pair<PlayerSession*, ProtocolReader&>> _session_agent;
+    // 正在登录中的用户 key : 用户名  value : 用户连接ID
+    std::unordered_map<std::string, uint32_t> _logging;
 };
 
 #endif

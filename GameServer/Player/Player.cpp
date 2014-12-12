@@ -4,8 +4,21 @@
 #include "../../protocol/protocol.h"
 using namespace NGServer::protocol;
 
+#include <iostream>
+Player::~Player()
+{
+    std::cout << "--- Player[" << _playerid << "] Logout." << std::endl;
+}
+
+Player::Player(int64_t playerid, std::shared_ptr<PlayerSession> session)
+    :_session(session), _playerid(playerid)
+{
+    std::cout << "+++ Player[" << _playerid << "] Login." << std::endl;
+}
+
 int32_t Player::Decode(const char* data, size_t len)
 {
+    /*
     // 客户端断线
     if (data == nullptr || len == 0)
     {
@@ -39,10 +52,31 @@ int32_t Player::Decode(const char* data, size_t len)
         buff += msgLen;
     }
     return remainLen;
-
+    */
+    return 0;
 }
 
-void Player::Offline()
+void Player::Close()
 {
-    
+    // 解除智能指针相互引用链
+    _session->SetPlayerToken(std::shared_ptr<Player>(nullptr));
+    // 关闭网络IO
+    _session->DisConnect(false);
 }
+
+// 数据库加载数据完成
+void Player::OnDBLoadCompleted()
+{
+    // 此时玩家业务数据均已加载到内存中
+    // 发送各子系统必要的初始化同步数据到客户端
+    // 如： _task.LoadTask(); 
+    //     _gate.LoadGate();
+    // ......
+
+    // 测试消息 告诉客户端加载已完成
+    S2C_LoadCompleted msg;
+    msg.teststr = "欢迎来到游戏世界.";
+    SendMsg(kS2C_LoadCompleted, msg);
+
+}
+

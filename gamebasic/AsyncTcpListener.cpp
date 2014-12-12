@@ -9,34 +9,37 @@ AsyncTcpListener::AsyncTcpListener(IOService* ioservice)
 void AsyncTcpListener::Start(const EndPoint& endpoint)
 {
     {
-        AutoLocker locker(&_lock);
-        if (_running) return;
-        _running = true;
+        AutoLocker aLock(&_acceptor_lock);
+        if (_acceptor != nullptr)
+            return;
+
+        _acceptor = std::make_shared<Accepter>(*_ioservice, endpoint, false);
     }
 
-    std::shared_ptr<Accepter> acceptor = std::make_shared<Accepter>(*_ioservice, endpoint, false);
-    acceptor->set_option(Accepter::reuse_address(true));
-    acceptor->set_option(boost::asio::socket_base::keep_alive(true));
-    StartAccept(acceptor);
+    _acceptor->set_option(Accepter::reuse_address(true));
+    _acceptor->set_option(boost::asio::socket_base::keep_alive(true));
+    
+    StartAccept();
 }
 
-void AsyncTcpListener::StartAccept(const std::shared_ptr<Accepter>& acceptor)
+void AsyncTcpListener::StartAccept()
 {
-    if (_running)
+    if (_acceptor != nullptr)
     {
         std::shared_ptr<Socket> socket(new Socket(*_ioservice));
-        acceptor->async_accept(*socket, boost::bind(&AsyncTcpListener::AcceptCompleted, this, boost::asio::placeholders::error, acceptor, socket));
+        _acceptor->async_accept(*socket, boost::bind(&AsyncTcpListener::AcceptCompleted, this, boost::asio::placeholders::error, socket));
     }
 }
 
 void AsyncTcpListener::AcceptCompleted(const boost::system::error_code& err,
-    const std::shared_ptr<Accepter>& acceptor,
     const std::shared_ptr<Socket>& socket)
 {
     if (err)
+    {
         return;
+    }
 
-    if (_running)
+    if (_acceptor != nullptr)
     {
         // 对接收到的套接字设置基本选项
         const static boost::asio::ip::tcp::no_delay nodelay(true);
@@ -48,7 +51,7 @@ void AsyncTcpListener::AcceptCompleted(const boost::system::error_code& err,
 
         // 处理 并继续监听
         OnConnect(socket);
-        StartAccept(acceptor);
+        StartAccept();
     }
 }
 
@@ -63,6 +66,10 @@ void AsyncTcpListener::OnConnect(const std::shared_ptr<Socket>& socket)
 // 停止监听
 void AsyncTcpListener::Stop()
 {
-    AutoLocker locker(&_lock);
-    if (_running) _running = false;
+    if (_closed_lock.TryLock())
+    {
+        AutoLocker aLock(&_acceptor_lock);
+        _acceptor->close();
+        _acceptor = nullptr;
+    }
 }

@@ -37,12 +37,11 @@ bool Service::Receive()
     }
     msgs->clear();
 
-    if (_msgqueue.Size())
-        return true;
-
 #ifdef _DEBUG
     _recvcheck.UnLock();
 #endif
+    if (_msgqueue.Size())
+        return true;
 
     _readylock.UnLock();
     return false;

@@ -8,7 +8,7 @@ class AsyncTcpListener
 public:
     AsyncTcpListener(const AsyncTcpListener&) = delete;
     AsyncTcpListener& operator = (const AsyncTcpListener&) = delete;
-    
+    virtual ~AsyncTcpListener(){};
 
 public:
     AsyncTcpListener(IOService* ioservice);
@@ -24,9 +24,8 @@ public:
 
 
 private:
-    void StartAccept(const std::shared_ptr<Accepter>& acceptor);
+    void StartAccept();
     void AcceptCompleted(const boost::system::error_code& err,
-        const std::shared_ptr<Accepter>& acceptor,
         const std::shared_ptr<Socket>& socket);
 
 protected:
@@ -34,8 +33,9 @@ protected:
 
 private:
     IOService* _ioservice;
-    Locker _lock;
-    bool _running;
+    std::shared_ptr<Accepter> _acceptor;
+    Locker _acceptor_lock;
+    Locker _closed_lock;
 };
 
 #endif

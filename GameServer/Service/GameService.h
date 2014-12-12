@@ -1,11 +1,10 @@
 #ifndef __NGSERVER_GAMESERVICE_H_INCLUDE__
 #define __NGSERVER_GAMESERVICE_H_INCLUDE__
 
+#include "protocol/protocol.h"
 #include "gamebasic/Service.h"
 #include "common/AutoCall.h"
 #include "gamebasic/AutoCallSpecial.h"
-#include "protocol/protocol.h"
-#include "../Player/SessionManager.h"
 
 using namespace NGServer::protocol;
 using namespace NGServer::common;
@@ -16,6 +15,10 @@ using namespace NGServer::common;
 *       2. 添加消息注册机制
 *       3. 添加一些群发等功能
 */
+
+class Player;
+class PlayerSession;
+class SessionManager;
 
 class GameService : public Service
 {
@@ -35,78 +38,74 @@ public:
         _dbservice_sid = dbservice_sid;
     }
 
-    void SetSessionManager(SessionManager* manager)
+    void SetSessionManager(std::shared_ptr<SessionManager>& manager)
     {
         _session_manager = manager;
     }
+
+    // 在ProcessMsg消息回调中使用 由使用cbPlayerInsideDelegate的Service改写
+    virtual std::shared_ptr<Player> GetPlayer(int64_t playerid)
+    {
+        return nullptr;
+    }
+
+    virtual void OnPlayerLogout(PlayerSession* session);
+
 #pragma endregion
 
 #pragma region 处理消息
 public:
 
     bool ProcessMsg(InsideMessage* msg) override;
+    bool ProcessMsg(UserMessage* msg) override;
     
 #pragma endregion
 
 #pragma region 发送消息
 public:
-    template<typename T>
-    bool SendInsideMsg(int32_t sid, int64_t sessionid, uint16_t msgid, const T& t)
-    {
-        InsideMessageT<T>* insidemsg = new InsideMessageT<T>();
-        insidemsg->_dessid = sid;
-        insidemsg->_srcsid = _sid;
-        insidemsg->_sessionid = sessionid;
-        insidemsg->_msgid = msgid;
-        insidemsg->_data = t;
-        return Service::Send(sid, insidemsg);
-    }
 
-    bool SendInsideMsg(int32_t sid, int64_t sessionid, uint16_t msgid)
-    {
-        InsideMessage* insidemsg = new InsideMessage();
-        insidemsg->_dessid = sid;
-        insidemsg->_srcsid = _sid;
-        insidemsg->_sessionid = sessionid;
-        insidemsg->_msgid = msgid;
-        return Service::Send(sid, insidemsg);
-    }
 
     // 发送到数据库
     template<typename T>
-    bool SendToDB(int64_t sessionid, uint16_t msgid, const T& t)
+    bool SendToDB(int64_t sessionid, DBMsgId msgid, T& t)
     {
-        return SendInsideMsg<T>(_dbservice_sid, sessionid, msgid, t);
+        return Service::SendMsg(_dbservice_sid, sessionid, (uint16_t)msgid, t);
     }
 
     template<typename T>
-    bool SendToDB(uint16_t msgid, const T& t)
+    bool SendToDB(DBMsgId msgid, T& t)
     {
-        return SendInsideMsg<T>(_dbservice_sid, 0, msgid, t);
+        return Service::SendMsg(_dbservice_sid, 0, (uint16_t)msgid, t);
     }
 
     template<typename T>
-    bool SendToDB(int64_t sessionid, uint16_t msgid)
+    bool SendToDB(T& t)
     {
-        return SendInsideMsg(_dbservice_sid, sessionid, msgid);
+        return Service::SendMsg(_dbservice_sid, 0, (uint16_t)T::msgid, t);
     }
 
     template<typename T>
-    bool SendToDB(uint16_t msgid)
+    bool SendToDB(int64_t sessionid, DBMsgId msgid)
     {
-        return SendInsideMsg(_dbservice_sid, 0, msgid);
+        return Service::SendMsg(_dbservice_sid, sessionid, (uint16_t)msgid);
+    }
+
+    template<typename T>
+    bool SendToDB(DBMsgId msgid)
+    {
+        return Service::SendMsg(_dbservice_sid, 0, (uint16_t)msgid);
     }
 
     // 发送到日志
     template<typename T>
-    bool SendToLog(uint16_t msgid, const T& t)
+    bool SendToLog(uint16_t msgid, T& t)
     {
-        return SendInsideMsg(_dbservice_sid, 0, msgid, t);
+        return Service::SendMsg(_logservice_sid, 0, msgid, t);
     }
 
     // 发送到客户端
     template<typename T>
-    bool SendToClient(uint16_t msgid, const T& t)
+    bool SendToClient(uint16_t msgid, T& t)
     {
         char buf[kBufferSize];
         ProtocolWriter encoder(buf, kBufferSize);
@@ -144,27 +143,86 @@ public:
 public:
     enum CallBackType
     {
-        cbPlayerDelegate = 1,  // 以Player*为第一个参数的回调函数
-        cbPlayerMethod   = 2, // 回调Player的方法
-        cbSessioDelegate = 3, // 回调以PlayerSession*为第一个参数的回调函数
+        cbPlayerDelegate = 1,   // 回调函数形式： 第一个参数: Player*           第二个参数：从ProtocolReader中读取
+        cbSessioDelegate,       // 回调函数形式： 第一个参数: PlayerSession*    第二个参数：从ProtocolReader中读取
+        cbInsideDelegate,       // 回调函数形式： 第一个参数: 从InsideMessage中读取
+        cbSessionInsideDelegate,// 回调函数形式： 第一个参数: PlayerSession*    第二个参数：从InsideMessage中读取
+        cbPlayerInsideDelegate, // 回调函数形式： 第一个参数: Player*           第二个参数：从InsideMessage中读取
     };
-    /*
-    template<typename R, typename ObjT, typename T1, typename T2>
-    void RegistPlayer(R(ObjT::*f)(T1, T2), ObjT* obj)
+    
+    // 回调类型：cbPlayerDelegate
+    template<typename MsgEnum, typename F, typename ObjT>
+    void RegistPlayer(MsgEnum msgid, F f, ObjT* obj)
     {
-        uint16_t msgid = _player_delegate.RegistMsg(f, obj);
         _calltype[msgid] = cbPlayerDelegate;
+        uint16_t msgid = _player_delegate.RegistMsg(f, obj);
     }
 
     template < typename R, typename T1, typename T2 > 
     void RegistPlayer(R(*f)(T1 ,T2))
     {
-        uint16_t msgid = _player_delegate.RegistMsg(f);
         _calltype[msgid] = cbPlayerDelegate;
+        uint16_t msgid = _player_delegate.RegistMsg(f);
     }
-    */
+    
 
+    // 回调类型： cbSessionDelegate
+    template<typename MsgEnum, typename F>
+    void RegistSession(MsgEnum msgid, F f)
+    {
+        _calltype[(uint16_t)msgid] = CallBackType::cbSessioDelegate;
+        _session_delegate.Regist((uint16_t)msgid, f);
+    }
 
+    template<typename MsgEnum, typename F, typename ObjT>
+    void RegistSession(MsgEnum msgid, F f, ObjT* obj)
+    {
+        _calltype[(uint16_t)msgid] = CallBackType::cbSessioDelegate;
+        _session_delegate.Regist((uint16_t)msgid, f, obj);
+    }
+    // 回调类型： cbInsideDelegate
+    template<typename MsgEnum, typename F>
+    void RegistInside(MsgEnum msgid, F f)
+    {
+        _calltype[(uint16_t)msgid] = CallBackType::cbInsideDelegate;
+        _inside_delegate.Regist((uint16_t)msgid, f);
+    }
+
+    template<typename MsgEnum, typename F, typename ObjT>
+    void RegistInside(MsgEnum msgid, F f, ObjT* obj)
+    {
+        _calltype[(uint16_t)msgid] = CallBackType::cbInsideDelegate;
+        _inside_delegate.Regist((uint16_t)msgid, f, obj);
+    }
+
+    // 回调类型： cbSessionInsideDelegate
+    template<typename MsgEnum, typename F>
+    void RegistSessionInside(MsgEnum msgid, F f)
+    {
+        _calltype[(uint16_t)msgid] = CallBackType::cbSessionInsideDelegate;
+        _session_inside_delegate.Regist((uint16_t)msgid, f);
+    }
+    template<typename MsgEnum, typename F, typename ObjT>
+    void RegistSessionInside(MsgEnum msgid, F f, ObjT* obj)
+    {
+        _calltype[(uint16_t)msgid] = CallBackType::cbSessionInsideDelegate;
+        _session_inside_delegate.Regist((uint16_t)msgid, f, obj);
+    }
+
+    // 回调类型： cbPlayerInsideDelegate
+    template<typename MsgEnum, typename F>
+    void RegistPlayerInside(MsgEnum msgid, F f)
+    {
+        _calltype[(uint16_t)msgid] = CallBackType::cbPlayerInsideDelegate;
+        _player_inside_delegate.Regist((uint16_t)msgid, f);
+    }
+
+    template<typename MsgEnum, typename F, typename ObjT>
+    void RegistPlayerInside(MsgEnum msgid, F f, ObjT* obj)
+    {
+        _calltype[(uint16_t)msgid] = CallBackType::cbPlayerInsideDelegate;
+        _player_inside_delegate.Regist((uint16_t)msgid, f, obj);
+    }
 #pragma endregion
 
 
@@ -174,7 +232,20 @@ protected:
 
     CallBackType _calltype[256 * 256];
 
-    SessionManager* _session_manager;
+    std::shared_ptr<SessionManager> _session_manager;
+
+private:
+
+    // 管理注册 回调函数：第一个参数为Player* 第二个参数从ProtocolReader中读取
+    DelegateManager<std::pair<Player*, ProtocolReader&>> _player_delegate;
+    // 管理注册 回调函数：第一个参数为PlayerSession* 第二个参数从ProtocolReader中读取
+    DelegateManager<std::pair<PlayerSession*, ProtocolReader&>> _session_delegate;
+    // 管理注册 回调函数：只含一个参数  从InsideMessage中读取
+    DelegateManager<InsideMessage> _inside_delegate;
+    // 管理注册 回调函数：第一个参数为PlayerSession* 第二个参数从InsideMessage中读取
+    DelegateManager<std::pair<PlayerSession*, InsideMessage*>> _session_inside_delegate;
+    // 管理注册 回调函数：第一个参数为Player* 第二个参数从InsideMessage中读取
+    DelegateManager<std::pair<Player*, InsideMessage*>> _player_inside_delegate;
 };
 
 #endif

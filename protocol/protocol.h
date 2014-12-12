@@ -4,5 +4,6 @@
 #include "protocol_stream.h"
 #include "pod_protocol.h"
 #include "customize_protocol.h"
+#include "db_protocol.h"
 
 #endif

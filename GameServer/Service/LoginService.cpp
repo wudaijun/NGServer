@@ -1,4 +1,5 @@
 #include "LoginService.h"
+#include "SessionManager.h"
 
 uint16_t LoginService::sDefaultSid = 1;
 
@@ -26,56 +27,85 @@ void LoginService::StartMapServer(boost::asio::io_service* io)
     }
 }
 
-bool LoginService::ProcessMsg(UserMessage* msg)
+// 检查是否所有玩家都已下线
+bool LoginService::IsAllOffline()
 {
-    UserMessageT<PlayerSessionPtr>* msgT = dynamic_cast<UserMessageT<PlayerSessionPtr>*>(msg);
-    if (msgT == nullptr)
-        return true;
-
-    PlayerSessionPtr session = msgT->GetClient();
-    int32_t sid = session->GetSid();
-
-    // 不是发送给当前服务的消息 转发
-    if (sid != _sid)
+    for (auto map : _mapservices)
     {
-        return ServiceManager::Send(sid, msg);
+        if (map->GetOnlineNum() != 0)
+            return false;
     }
-
-    // 客户端断开连接
-    if (msg->_len == 0)
-    {
-        _logging.erase(session->GetConnId());
-        _session_manager->RemoveSession(session->GetConnId());
-        return true;
-    }
-
-
-    ProtocolReader reader(msg->_data, msg->_len);
-    uint16_t msgid = reader.ReadMsgId();
-    CallBackType cbType = _calltype[msgid];
-    switch (cbType)
-    {
-    case CallBackType::cbSessioDelegate:
-        auto arg = std::pair<PlayerSession*, ProtocolReader&>(session.get(), reader);
-        _session_agent.Call(msgid, arg);
-        break;
-    }
-
     return true;
+}
+
+// 得到当前在线玩家数
+int32_t LoginService::GetCurOnline()
+{
+    int32_t total_online = 0;
+    for (auto map : _mapservices)
+    {
+        total_online += map->GetOnlineNum();
+    }
+    return total_online;
 }
 
 // 完成消息注册
 bool LoginService::Init()
 {
-    //RegistPlayer(C2S_Login::msgid, &LoginService::OnLogin, this);
-    //RegistPlayer(C2S_Login::msgid, &LoginService::OnLogin, this);
-    RegistSession(C2S_Login::msgid, &LoginService::OnLogin, this);
-
+    RegistSession(C2S_Login::msgid, &LoginService::OnPlayerLogin, this);
+    RegistSessionInside(D2S_PlayerLoginResult::msgid, &LoginService::OnDBPlayerLogin, this);
     return true;
 }
 
 
-void LoginService::OnLogin(PlayerSession* player, C2S_Login& msg)
+void LoginService::OnPlayerLogin(PlayerSession* session, C2S_Login& msg)
 {
+    if (!session->IsState(kSessionState_None))
+        return;
 
+    session->SetState(kSessionState_Logging);
+    session->SetOwner(msg.owner);
+
+    if (_logging.find(msg.owner) != _logging.end())
+        return;
+
+    _logging[msg.owner] = session->GetConnId();
+
+    S2D_PlayerLogin dbmsg;
+    dbmsg.owner = msg.owner;
+    dbmsg.pwd = msg.pwd;
+    dbmsg.connid = session->GetConnId();
+    SendToDB(dbmsg.connid, kS2D_PlayerLogin, dbmsg);
+}
+
+void LoginService::OnDBPlayerLogin(PlayerSession* session, D2S_PlayerLoginResult& msg)
+{
+    // 检查是否登录成功
+    // ...
+
+    session->SetState(kSessionState_Success);
+    _logging.erase(msg.owner);
+    // 转发给MapService
+    // 这里直接发给第一个MapService 不做负载均衡
+    SS_PlayerLogin res;
+    res.login_info = msg;
+    res.session = dynamic_pointer_cast<PlayerSession>(session->shared_from_this());
+    
+    if (_mapservices.size() > 0)
+    {
+        int32_t sid = _mapservices[0]->GetSid();
+        SendMsg(sid, session->GetConnId(), kSS_PlayerLogin, res);
+    }
+
+    // 发送玩家登录结果
+    S2C_Login loginresult;
+    loginresult.login_success = true;
+    session->SendMsg(kS2C_Login, loginresult);
+}
+
+// 玩家下线
+void LoginService::OnPlayerLogout(PlayerSession* session)
+{
+    _session_manager->RemoveSession(session->GetConnId());
+    session->DisConnect(false);
 }

@@ -11,8 +11,11 @@ namespace protocol
 enum MsgId : uint16_t
 { 
     kC2S_Start = 1000,
-    kC2S_Login,
+    kC2S_Login,     // ¿Í»§¶ËµÇÂ¼
 
+    kS2C_Start = 5000,
+    kS2C_Login,
+    kS2C_LoadCompleted,
 };
 
 }

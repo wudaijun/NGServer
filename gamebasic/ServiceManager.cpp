@@ -275,13 +275,15 @@ void ServiceManager::Start(int threadNum)
 void ServiceManager::StopThread()
 {
     AutoLocker aLock(&_locker);
+ 
+    _runing = false;
+
     // 停止所有线程
     for (auto t : _threads)
     {
         t->join();
         delete t;
     }
-    _runing = false;
 }
 
 void ServiceManager::Stop()

@@ -2,7 +2,7 @@
 #define __NGSERVER_SERVICEQUEUE_H_INCLUDE__
 
 #include <boost/weak_ptr.hpp>
-#include "Locker.h"
+#include "../common/Locker.h"
 #include "Service.h"
 
 class ServiceQueue
@@ -14,12 +14,16 @@ public:
     {
         if (sptr != nullptr)
         {
-            uint16_t sid = static_cast<uint16_t>(sptr->GetSid());
-            if (_service_set[sid] == false)
+            AutoLocker aLock(&_lock);
+            if (_size < kMaxServiceNum)
             {
-                _services[_write_off++] = sptr;
-                _service_set[sid] = true;
-                return ++_size;
+                uint16_t sid = static_cast<uint16_t>(sptr->GetSid());
+                if (_service_set[sid] == false)
+                {
+                    _services[_write_off++] = sptr;
+                    _service_set[sid] = true;
+                    return ++_size;
+                }
             }
         }
 
@@ -36,7 +40,11 @@ public:
             {
                 ServicePtr sptr = _services[_read_off++].lock();
                 --_size;
-                _service_set[static_cast<uint16_t>(sptr->GetSid())] = false;
+                if (sptr)
+                {
+                    uint16_t sid = static_cast<uint16_t>(sptr->GetSid());
+                    _service_set[sid] = false;
+                }
                 return sptr;
             }
         }

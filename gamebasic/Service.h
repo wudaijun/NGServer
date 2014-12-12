@@ -3,12 +3,11 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <chrono>
 #include "Message.h"
 #include "MessageQueue.h"
-#include "Locker.h"
-#include <chrono>
 
-class Service : public boost::enable_shared_from_this < Service > 
+class Service : public std::enable_shared_from_this < Service > 
 {
 public:
     // 单条消息最大缓冲
@@ -55,19 +54,19 @@ public:
         msg->_srcsid = GetSid();
         msg->_sessionid = sessionid;
         msg->_msgid = msgid;
-        Service::Send(sid, msg);
+        return Service::Send(sid, msg);
     }
 
     template < typename MsgT > 
     bool SendMsg(int32_t sid, int64_t sessionid, int16_t msgid, MsgT& t)
     {
-        InsideMessageT* msg = new InsideMessageT<MsgT>();
+        InsideMessageT<MsgT>* msg = new InsideMessageT<MsgT>();
         msg->_dessid = sid;
         msg->_srcsid = GetSid();
         msg->_sessionid = sessionid;
         msg->_msgid = msgid;
         msg->_data = t;
-        Service::Send(sid, msg);
+        return Service::Send(sid, msg);
     }
 private:
     // 处理单条消息 返回值代表该消息是否需要被删除 

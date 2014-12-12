@@ -1,27 +1,26 @@
-#include "gamebasic/AsyncTcpListener.h"
-#include "gamebasic/Session.h"
-#include "Player/SessionManager.h"
-#include "gamebasic/ServiceManager.h"
-#include "protocol/protocol.h"
-#include "Service/LoginService.h"
-
-using namespace NGServer::protocol;
+#include <iostream>
+#include <conio.h> // for _getch()
+#include "Server.h"
 
 int main()
 {
-    boost::asio::io_service ioservice;
-    SessionManager listener(&ioservice);
-    //ServiceManager::PushCycleMessage(CycleMessage::Create(nullptr, 10000*1000));
-    //ServiceManager::PushTimerMessage(new ServiceTimer(Service::SteadyNow() + 10000 * 2000, 0, new TimerMessage("2s")));
+    
+    Server server;
 
-    auto login = ServiceManager::Spawn<LoginService>(LoginService::sDefaultSid);
-    login->SetSessionManager(&listener);
-    login->StartMapServer(&ioservice);
+    server.StartServer("127.0.0.1", 23456, 2);
 
-    listener.Start("127.0.0.1", 23456);
+    std::cout << "------ Server Running ------" << std::endl;
+    std::cout << "-- Esc To Exiting Safely. --" << std::endl;
+    std::cout << "----------------------------" << std::endl;
 
-    ServiceManager::Start(2);
-    ioservice.run();
+    while (_getch() != 27);
+
+    std::cout << " Cur Online: " << server.GetCurOnline() << std::endl;
+    std::cout << " Now. Stoping ... ";
+    server.StopServer();
+    std::cout << " Done. " << endl;
+
+    _getch();
 
     return 0;
 }

@@ -23,9 +23,15 @@ CUSTOMMSG(C2S_Login)
 {
     
     NETMSGID(kC2S_Login);
-    std::string name;
+    std::string owner;
     std::string pwd;
 
+};
+
+CUSTOMMSG(S2C_LoadCompleted)
+{
+    NETMSGID(kS2C_LoadCompleted);
+    std::string teststr;
 };
 
 }

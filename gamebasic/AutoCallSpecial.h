@@ -43,8 +43,8 @@ public:
 
     bool Call(InsideMessage& s) override
     {
-        typedef typename std::remove_const< std::remove_reference<T1> >::type TT1;
-        typedef typename InsideMessageT< TT1 > MsgType;
+        typedef typename std::remove_const< std::remove_reference<T1>::type >::type TT1;
+        typedef InsideMessageT< TT1 > MsgType;
         MsgType* msg = dynamic_cast<MsgType*>(&s);
         if (msg == nullptr)
         {
@@ -65,7 +65,7 @@ public:
 
 // 只带T1一个参数
 template<typename T1, typename FuncT>
-class Delegate1<std::pair<T1, InsideMessage>, T1, FuncT> : public IDelegate < std::pair<T1, InsideMessage> > 
+class Delegate1<std::pair<T1, InsideMessage*>, T1, FuncT> : public IDelegate < std::pair<T1, InsideMessage*> > 
 {
     FuncT _func;
 
@@ -73,7 +73,7 @@ public:
     Delegate1(FuncT f) :
         _func(f){}
 
-    bool Call(std::pair<T1, InsideMessage>& s) override
+    bool Call(std::pair<T1, InsideMessage*>& s) override
     {
         _func(s.first);
         return true;
@@ -82,7 +82,7 @@ public:
 
 // 带两个参数 第一个参数为T1 第二个参数为InsideMessage中的消息体
 template<typename T1, typename T2, typename FuncT>
-class Delegate2<std::pair<T1, InsideMessage>, T1, T2, FuncT> : public IDelegate < std::pair<T1, InsideMessage> > 
+class Delegate2<std::pair<T1, InsideMessage*>, T1, T2, FuncT> : public IDelegate < std::pair<T1, InsideMessage*> > 
 {
     FuncT _func;
 
@@ -90,19 +90,20 @@ public:
     Delegate2(FuncT f) :
         _func(f){}
 
-    bool Call(std::pair<T1, InsideMessage>&s) override
+    bool Call(std::pair<T1, InsideMessage*>&s) override
     {
         typedef typename std::remove_const< std::remove_reference<T2>::type >::type TT2;
         typedef typename InsideMessageT<TT2> MsgType;
 
-        MsgType* msg = dynamic_cast<MsgType*>(&s.second);
+        MsgType* msg = dynamic_cast<MsgType*>(s.second);
         if (msg == nullptr)
         {
             assert(0);
             return false;
         }
 
-        _func(s.first, msg._data);
+        _func(s.first, msg->_data);
+        return true;
     }
 };
 

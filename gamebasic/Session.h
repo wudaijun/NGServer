@@ -14,10 +14,15 @@ typedef boost::asio::socket_base::shutdown_type ShutDownType;
 *           StartRecv() 启动会话
 *           SendAsync() 异步发送数据 内部使用双缓冲提升效率
 *           ProcessData() 处理_recv_buff中的数据接口 一般做解码
+*
+*   TODO: 目前Session通过Close执行暴力关闭( _socket.close() )
+*         没有做到优雅的关闭TCP连接，包括正确处理关闭连接时的读写缓冲区
+*          后期应该对其优化
 */
 
 class Session : public std::enable_shared_from_this<Session>
 {
+public:
     static const int32_t kBufferSize = 65536; // 64 k 接收区缓冲
 
 public:
@@ -37,11 +42,10 @@ public:
         _decoder = decoder;
     }
 
-    // 关闭套接字连接
-    void ShutDown(ShutDownType stype);
+    // 客户端断开连接
+    // notifyServer: 是否通知业务逻辑层
+    void DisConnect( bool notifyServer = true );
 
-    // 通知服务器断开连接
-    void DisConnect();
 private:
     // 异步读取数据
     void AsyncReadSome();
@@ -55,13 +59,13 @@ private:
     // 发送完成
     void SendComplete(const boost::system::error_code& err, size_t bytes_to_transfer, size_t bytes_transferred);
 
+protected:
+    uint32_t _id;   // 会话ID
+
 private:
     std::function<int32_t(const char* data, size_t len)> _decoder;
 
     std::shared_ptr<Socket> _socket;
-    uint32_t _id;   // 会话ID
-
-    bool _run = false; // 状态标识
 
     // 接收缓冲区
     char _recv_buf[kBufferSize];
@@ -74,7 +78,10 @@ private:
 
     // 发送锁 同一时间只能有一个线程发送数据
     Locker _sending_lock;
-    Locker _closing_lock;
+    // Session 是否在活动中
+    Locker _runing_lock;
+    // Session 是否已关闭
+    Locker _closed_lock;
 };
 
 typedef std::shared_ptr<Session> SessionPtr;

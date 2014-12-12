@@ -90,6 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\GameServer</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,6 +136,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="customize_protocol.h" />
+    <ClInclude Include="db_protocol.h" />
+    <ClInclude Include="msgid.h" />
     <ClInclude Include="pod_protocol.h" />
     <ClInclude Include="protocol.h" />
     <ClInclude Include="protocol_stream.h" />

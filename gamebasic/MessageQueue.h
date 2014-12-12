@@ -2,7 +2,7 @@
 #define __NGSERVER_MESSAGEQUEUE_H_INCLUDE__
 
 #include<vector>
-#include"Locker.h"
+#include "../common/Locker.h"
 
 /*
  *	文件：	MessageQueue.h
