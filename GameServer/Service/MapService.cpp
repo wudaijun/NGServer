@@ -55,6 +55,10 @@ void MapService::OnPlayerLogin(SS_PlayerLogin& msg)
 
 void MapService::OnPlayerLogout(PlayerSession* session)
 {
-    RemovePlayer(session->GetPlayerToken()->GetPlayerId());
+    std::shared_ptr<Player> player = session->GetPlayerToken();
+    if (player)
+    {
+        RemovePlayer(player->GetPlayerId());
+    }
     _session_manager->RemoveSession(session->GetConnId());
 }

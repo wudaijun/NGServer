@@ -28,7 +28,7 @@ public:
     void SetState(SessionState state) { _state = state; }
     bool IsState(SessionState state) { return _state == state;  }
 
-    // 玩家指针
+    // 玩家指针 PlayerSession持有Player的弱引用(weak_ptr) 获取时可能为空
     std::shared_ptr<Player> GetPlayerToken()const { return _playerToken.lock(); }
     void SetPlayerToken(std::shared_ptr<Player>& token){ _playerToken = token; }
 
