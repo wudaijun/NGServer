@@ -27,6 +27,7 @@ bool Service::Receive()
     }
 #endif
     std::vector<Message*>* msgs = _msgqueue.PopAll();
+    assert(msgs != nullptr); // ready service's msgqueue should not be empty
     for (auto msg : *msgs)
     {
         std::unique_ptr<Message> autodel(msg);

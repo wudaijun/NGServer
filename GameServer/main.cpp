@@ -9,14 +9,13 @@ int main()
 
     server.StartServer("127.0.0.1", 23456, 2);
 
-    std::cout << "------ Server Running ------" << std::endl;
-    std::cout << "-- Esc To Exiting Safely. --" << std::endl;
-    std::cout << "----------------------------" << std::endl;
-
+    std::cout << "----- Server Running" << std::endl;
+    std::cout << "----- Esc To Exiting Safely. " << std::endl;
+    
     while (_getch() != 27);
 
-    std::cout << " Cur Online: " << server.GetCurOnline() << std::endl;
-    std::cout << " Now. Stoping ... ";
+    std::cout << "----- Cur Online: " << server.GetCurOnline() << std::endl;
+    std::cout << "----- Now. Stoping ... ";
     server.StopServer();
     std::cout << " Done. " << endl;
 

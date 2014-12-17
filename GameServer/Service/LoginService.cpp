@@ -57,7 +57,6 @@ bool LoginService::Init()
     return true;
 }
 
-
 void LoginService::OnPlayerLogin(PlayerSession* session, C2S_Login& msg)
 {
     if (!session->IsState(kSessionState_None))

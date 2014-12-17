@@ -7,12 +7,12 @@
 PlayerSession::PlayerSession(const std::shared_ptr<Socket> socket, int32_t conn_id)
     :Session(socket, conn_id)
 {
-    //std::cout << "PlayerSession" << std::endl;
+    //std::cout << "PlayerSession" << _id << std::endl;
 }
 
 PlayerSession::~PlayerSession()
 {
-    // std::cout << "~PlayerSession" << std::endl;
+    //std::cout << "~PlayerSession" << _id << std::endl;
 }
 
 // 解码原始数据 将数据由网络IO转向逻辑层

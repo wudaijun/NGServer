@@ -59,7 +59,7 @@ int32_t Player::Decode(const char* data, size_t len)
 void Player::Close()
 {
     // 解除智能指针相互引用链
-    _session->SetPlayerToken(std::shared_ptr<Player>(nullptr));
+    //_session->SetPlayerToken(std::shared_ptr<Player>(nullptr));
     // 关闭网络IO
     _session->DisConnect(false);
 }

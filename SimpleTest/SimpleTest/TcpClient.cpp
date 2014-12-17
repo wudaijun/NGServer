@@ -20,16 +20,20 @@ bool TcpClient::ConnectToServer()
 
 bool TcpClient::ConnectToServer(EndPoint ep)
 {
-    boost::system::error_code err;
-    _socket.connect(ep, err);
+    _socket.async_connect(ep, boost::bind(&TcpClient::Connected, shared_from_this(), boost::asio::placeholders::error));
+    return true;
+}
+
+// 连接回调
+void TcpClient::Connected(const boost::system::error_code& err)
+{
     if (err)
     {
-        cout << err.message() << endl;
-        return false;
+        std::cerr << "connect error: "<<err.message() << std::endl;
+        return;
     }
 
     StartRecv();
-    return true;
 }
 
 void TcpClient::StartRecv()
@@ -51,7 +55,7 @@ void TcpClient::SendComplete(const boost::system::error_code& err, size_t bytes_
 {
     if (err || bytes_transferred == 0)
     {
-        std::cout << "send error: " << err.message() << std::endl;
+        std::cerr << "send error: " << err.message() << std::endl;
         return;
     }
 }
@@ -60,7 +64,7 @@ void TcpClient::RecvComplete(const boost::system::error_code& err, size_t bytes_
 {
     if (err || bytes_transferred == 0)
     {
-        std::cout << "recv error: " << err.message() << std::endl;
+        std::cerr << "recv error: " << err.message() << std::endl;
         return;
     }
     _offset += bytes_transferred;

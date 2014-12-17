@@ -1,5 +1,6 @@
 #include "LogicClient.h"
 #include "RobotsManager.h"
+#include <sstream>
 
 LogicClient::LogicClient(IOService* io, int32_t id)
     :TcpClient(io, id), _time_stater(id)
@@ -16,15 +17,25 @@ bool LogicClient::Init()
     return true;
 }
 
+void LogicClient::Connected(const boost::system::error_code& err)
+{
+    if (err)
+    {
+        std::cerr << "connect error: " << err.message() << std::endl;
+        return;
+    }
+    StartRecv();
+    Login();
+}
+
 void LogicClient::Login()
 {
-    if (!ConnectToServer())
-        return;
-
     StartTime(C2S_Login::msgid);
 
     C2S_Login msg;
-    msg.owner = "robot";
+    ostringstream ss;
+    ss << "robot" << _id;
+    msg.owner = ss.str();
     msg.pwd = "iamrobot";
     SendMsg(msg);
 } 

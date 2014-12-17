@@ -19,14 +19,19 @@ CycleMessage* CycleMessage::Create(ServicePtr sptr, int32_t proid)
     return new CycleMessage(sptr, Service::SteadyNow() + proid, proid);
 }
 
+#include <iostream>
 // 发送消息到指定Service msg的管理权将转交 调用者不需再关心msg的释放问题
 bool ServiceManager::Send(int32_t sid, Message* msg)
 {
+    if (sid == 3)
+        std::cout << "Send To DBService" << std::endl;
     if (sid < kMaxServiceNum)
     {
         ServicePtr sptr = _serviceMap[sid];
         if (sptr != nullptr)
         {
+            if (sid == 3)
+                std::cout << "Push To DBService" << std::endl;
             if (sptr->PushMsg(msg))
             {
                 PushService(sptr);
@@ -93,6 +98,7 @@ uint16_t ServiceManager::RegisterService(ServicePtr s)
 
 bool ServiceManager::PushService(ServicePtr& sptr)
 {
+
     return _ready_services.Push(sptr) > 0;
 }
 
@@ -288,6 +294,7 @@ void ServiceManager::StopThread()
 
 void ServiceManager::Stop()
 {
+    AutoLocker aLock(&_locker);
     // 停止线程
     StopThread();
 }

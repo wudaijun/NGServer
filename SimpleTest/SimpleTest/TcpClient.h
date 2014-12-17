@@ -42,6 +42,8 @@ public:
 
     bool ConnectToServer(EndPoint ep);
 
+    virtual void Connected(const boost::system::error_code& err);
+
     void StartRecv();
 
     void SendData(const char* data, size_t len=0);

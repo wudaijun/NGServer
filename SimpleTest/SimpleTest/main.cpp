@@ -33,7 +33,7 @@ void GetParam(string& server_address, short& server_port, int& num_of_robot, int
     server_address = "127.0.0.1";
     server_port = 23456;
     login_opt = 0;
-    num_of_robot = 1;
+    num_of_robot = 100;
     
 }
 
@@ -49,10 +49,11 @@ int main(int argc, char* argv[])
     IOService io;
     for (int i = 0; i < num_of_robot; i++)
     {
-        std::shared_ptr<LogicClient> robot = std::make_shared<LogicClient>(&io, 1);
+        std::shared_ptr<LogicClient> robot = std::make_shared<LogicClient>(&io, i);
         //RobotsManager::GetInstance().AddRobot(robot);
         robot->SetServAddress(server_address, server_port);
-        robot->Login();
+        robot->ConnectToServer();
+        Sleep(1);
     }
 
     io.run();

@@ -29,7 +29,7 @@ public:
     bool IsState(SessionState state) { return _state == state;  }
 
     // 玩家指针
-    std::shared_ptr<Player> GetPlayerToken()const { return _playerToken; }
+    std::shared_ptr<Player> GetPlayerToken()const { return _playerToken.lock(); }
     void SetPlayerToken(std::shared_ptr<Player>& token){ _playerToken = token; }
 
     // 服务ID
@@ -76,7 +76,7 @@ public:
 
 private:
     int32_t _sid = 0;       // 所属服务ID
-    std::shared_ptr<Player> _playerToken; // 玩家指针
+    std::weak_ptr<Player> _playerToken; // 玩家指针
     SessionState _state = kSessionState_None;   // 会话状态
     std::string _owner;       // 登录用户名
 };

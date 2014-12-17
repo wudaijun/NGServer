@@ -71,6 +71,7 @@ bool GameService::ProcessMsg(UserMessage* msg)
         case CallBackType::cbSessioDelegate:
         {
             // »Øµ÷
+            assert(session != nullptr);
             auto arg = std::pair<PlayerSession*, ProtocolReader&>(session.get(), reader);
             _session_delegate.Call(msgid, arg);
         }
@@ -78,7 +79,9 @@ bool GameService::ProcessMsg(UserMessage* msg)
 
         case CallBackType::cbPlayerDelegate:
         {
-            auto arg = std::pair<Player*, ProtocolReader&>(session->GetPlayerToken().get(), reader);
+            std::shared_ptr<Player> player = session->GetPlayerToken();
+            assert(player != nullptr);
+            auto arg = std::pair<Player*, ProtocolReader&>(player.get(), reader);
             _player_delegate.Call(msgid, arg);
         }
     }

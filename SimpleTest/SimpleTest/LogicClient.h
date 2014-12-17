@@ -15,6 +15,8 @@ public:
     // 消息注册
     bool Init() override;
 
+    void Connected(const boost::system::error_code& err) override;
+
 // 统计时间
 public:
     inline void StartTime(uint16_t msgid)

@@ -57,5 +57,4 @@ void MapService::OnPlayerLogout(PlayerSession* session)
 {
     RemovePlayer(session->GetPlayerToken()->GetPlayerId());
     _session_manager->RemoveSession(session->GetConnId());
-    session->GetPlayerToken()->Close();
 }
