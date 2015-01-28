@@ -55,7 +55,7 @@ public:
 
     bool Call(Decoder& s) override
     {
-        std::remove_const < std::remove_reference<T1>::type >::type t1;
+        typename std::remove_const < typename std::remove_reference<T1>::type >::type t1;
 
         if (!Decode(s, t1))
             return false;
@@ -77,8 +77,8 @@ public:
 
     bool Call(Decoder& s) override
     {
-        std::remove_const< std::remove_reference<T1>::type >::type t1;
-        std::remove_const< std::remove_reference<T2>::type >::type t2;
+        typename std::remove_const< typename std::remove_reference<T1>::type >::type t1;
+        typename std::remove_const< typename std::remove_reference<T2>::type >::type t2;
 
         if (!Decode(s, t1))
             return false;
@@ -102,9 +102,9 @@ public:
 
     bool Call(Decoder& s) override
     {
-        std::remove_const< std::remove_reference<T1>::type >::type t1;
-        std::remove_const< std::remove_reference<T2>::type >::type t2;
-        std::remove_const< std::remove_reference<T3>::type >::type t3;
+        typename std::remove_const< typename std::remove_reference<T1>::type >::type t1;
+        typename std::remove_const< typename std::remove_reference<T2>::type >::type t2;
+        typename std::remove_const< typename std::remove_reference<T3>::type >::type t3;
 
         if (!Decode(s, t1))
             return false;
@@ -142,7 +142,7 @@ IDelegate<Decoder>* CreateDelegate2(FuncT f)
 template<typename Decoder, typename T1, typename T2, typename T3, typename FuncT>
 IDelegate<Decoder>* CreateDelegate3(FuncT f)
 {
-    return new Delegate2<Decoder, T1, T2, T3, FuncT>(f);
+    return new Delegate3<Decoder, T1, T2, T3, FuncT>(f);
 }
 
 /**************************************************/
@@ -152,7 +152,7 @@ template<typename Decoder, size_t Capacity = 65535>
 class DelegateManager
 {
 
-    typedef typename IDelegate<Decoder>* DelegatePtr;
+    typedef IDelegate<Decoder>* DelegatePtr;
     DelegatePtr _caller[Capacity];
 
 public:
@@ -306,21 +306,21 @@ public:
     template<typename R, typename ObjT>
     DelegatePtr Regist(uint16_t id, R(ObjT::*f)())
     {
-        auto bindf = std::bind(f, placeholders::_1);
+        auto bindf = std::bind(f, std::placeholders::_1);
         return Regist(id, CreateDelegate1<Decoder, ObjT*>(bindf));
     }
 
     template<typename R, typename ObjT, typename T1>
     DelegatePtr Regist(uint16_t id, R(ObjT::*f)(T1))
     {
-        auto bindf = std::bind(f, placeholders::_1, placeholders::_2);
+        auto bindf = std::bind(f, std::placeholders::_1, std::placeholders::_2);
         return Regist(id, CreateDelegate2<Decoder, ObjT*, T1>(bindf));
     }
 
     template<typename R, typename ObjT, typename T1, typename T2>
     DelegatePtr Regist(uint16_t id, R(ObjT::*f)(T1, T2))
     {
-        auto bindf = std::bind(f, placeholders::_1, placeholders::_2, placeholders::_3);
+        auto bindf = std::bind(f, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
         return Regist(id, CreateDelegate3<Decoder, ObjT*, T1, T2>(bindf));
     }
 };

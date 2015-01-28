@@ -35,7 +35,7 @@ bool Server::StopServer()
     _session_manager->Stop();
     // 检查是否所有玩家都已下线 
     if (!_login_service->IsAllOffline())
-        Sleep(1000); //等待一秒
+        sleep(1000); //等待一秒
 
     // 停止消息服务
     ServiceManager::Stop();

@@ -43,7 +43,7 @@ public:
 
     bool Call(InsideMessage& s) override
     {
-        typedef typename std::remove_const< std::remove_reference<T1>::type >::type TT1;
+        typedef typename std::remove_const< typename std::remove_reference<T1>::type >::type TT1;
         typedef InsideMessageT< TT1 > MsgType;
         MsgType* msg = dynamic_cast<MsgType*>(&s);
         if (msg == nullptr)
@@ -92,8 +92,8 @@ public:
 
     bool Call(std::pair<T1, InsideMessage*>&s) override
     {
-        typedef typename std::remove_const< std::remove_reference<T2>::type >::type TT2;
-        typedef typename InsideMessageT<TT2> MsgType;
+        typedef typename std::remove_const< typename std::remove_reference<T2>::type >::type TT2;
+        typedef InsideMessageT<TT2> MsgType;
 
         MsgType* msg = dynamic_cast<MsgType*>(s.second);
         if (msg == nullptr)
@@ -139,7 +139,7 @@ public:
 
     bool Call(std::pair<T1, ProtocolReader&>& s) override
     {
-        std::remove_const< std::remove_reference<T2>::type >::type t2;
+        typename std::remove_const< typename std::remove_reference<T2>::type >::type t2;
 
         if (!Decode(s.second, t2))
             return false;

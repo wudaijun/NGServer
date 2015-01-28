@@ -1,5 +1,4 @@
 #include <iostream>
-#include <conio.h> // for _getch()
 #include "Server.h"
 
 int main()
@@ -12,14 +11,14 @@ int main()
     std::cout << "----- Server Running" << std::endl;
     std::cout << "----- Esc To Exiting Safely. " << std::endl;
     
-    while (_getch() != 27);
+    while (getchar() != 27);
 
     std::cout << "----- Cur Online: " << server.GetCurOnline() << std::endl;
     std::cout << "----- Now. Stoping ... ";
     server.StopServer();
     std::cout << " Done. " << endl;
 
-    _getch();
+    getchar();
 
     return 0;
 }

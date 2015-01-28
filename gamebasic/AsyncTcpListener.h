@@ -29,7 +29,7 @@ private:
         const std::shared_ptr<Socket>& socket);
 
 protected:
-    atomic_uint32_t _connect_id = 0;
+    atomic_uint _connect_id;
 
 private:
     IOService* _ioservice;

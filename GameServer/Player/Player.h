@@ -4,6 +4,7 @@
 #include "gamebasic/NetHead.h"
 #include "protocol/protocol.h"
 #include "PlayerSession.h"
+#include "../Service/MapService.h"
 
 /*
 *   Player 代表一个玩家  负责玩家具体数据和逻辑交互
@@ -12,7 +13,7 @@
 
 using namespace NGServer::protocol;
 
-class MapService;
+//class MapService;
 
 class Player : public std::enable_shared_from_this<Player>
 {

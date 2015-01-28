@@ -25,7 +25,7 @@ void DBService::OnPlayerLogin(S2D_PlayerLogin& msg)
     // 这里简单使用自增ID作为玩家ID
     // 而实际上应该从数据库中加载(登录时)或生成(注册时)
 
-    static std::atomic_uint64_t sId = 0;
+    static std::atomic<unsigned long long> sId(0);
     D2S_PlayerLoginResult res;
     res.connid = msg.connid;
     res.owner = msg.owner;

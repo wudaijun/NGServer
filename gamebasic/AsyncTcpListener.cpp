@@ -4,6 +4,7 @@
 AsyncTcpListener::AsyncTcpListener(IOService* ioservice)
     :_ioservice(ioservice)
 {
+	_connect_id = 0;
 }
 
 void AsyncTcpListener::Start(const EndPoint& endpoint)

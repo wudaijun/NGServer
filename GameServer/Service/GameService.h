@@ -155,14 +155,15 @@ public:
     void RegistPlayer(MsgEnum msgid, F f, ObjT* obj)
     {
         _calltype[msgid] = cbPlayerDelegate;
-        uint16_t msgid = _player_delegate.RegistMsg(f, obj);
+        _player_delegate.Regist(msgid, f, obj);
     }
 
     template < typename R, typename T1, typename T2 > 
     void RegistPlayer(R(*f)(T1 ,T2))
     {
+		uint16_t msgid = T1::msgid;
         _calltype[msgid] = cbPlayerDelegate;
-        uint16_t msgid = _player_delegate.RegistMsg(f);
+        _player_delegate.Regist(msgid, f);
     }
     
 

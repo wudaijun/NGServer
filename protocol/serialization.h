@@ -13,6 +13,7 @@
 #include<stdint.h>
 #include<vector>
 #include<list>
+#include"protocol_stream.h"
 
 namespace NGServer
 {
@@ -163,7 +164,7 @@ namespace protocol
             {
                 for (uint16_t i = 0; i < size; i++)
                 {
-                    T::value_type v;
+                    typename T::value_type v;
                     if (!AutoDecode(s, v))
                         return false;
                     t.push_back(v);
@@ -176,7 +177,7 @@ namespace protocol
         template<typename S, typename T>
         bool DecodeArray(S& s, T* arr, size_t arraySize)
         {
-            uint16_t size = static_cast<uint16_t>arraySize;
+            uint16_t size = static_cast<uint16_t>(arraySize);
             for (uint16_t i = 0; i < size; i++)
             {
                 if (!AutoDecode(s, *(arr + i)))
@@ -299,13 +300,6 @@ namespace protocol
             return s.GetSize((const void*)arr, arraySize*sizeof(int64_t));
         }
 
-        // 全局获取对象编码大小
-        template<typename T>
-        uint32_t GetMsgSize(const T& t)
-        {
-            ProtocolSize sizer;
-            return AutoMsgSize(sizer, t);
-        }
 #pragma endregion
 
 #pragma region 序列化类 Serializer
