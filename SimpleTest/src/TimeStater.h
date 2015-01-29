@@ -39,7 +39,7 @@ private:
     // 消息 -> 消息响应所花费的时间
     static std::map<int32_t, std::vector<int64_t>> _time_costs;
     // 消息发送数量 - 消息接收数量
-    static std::map<int32_t, std::atomic_uint32_t> _msg_sendrecv;
+    static std::map<int32_t, std::atomic<unsigned int>> _msg_sendrecv;
     static Locker _lock;
 };
 

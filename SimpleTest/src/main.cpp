@@ -4,7 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include "RobotsManager.h"
-#include <conio.h>
 
 using namespace NGServer::protocol;
 using namespace std;
@@ -33,7 +32,7 @@ void GetParam(string& server_address, short& server_port, int& num_of_robot, int
     server_address = "127.0.0.1";
     server_port = 23456;
     login_opt = 0;
-    num_of_robot = 100;
+    num_of_robot = 1;
     
 }
 
@@ -53,7 +52,7 @@ int main(int argc, char* argv[])
         //RobotsManager::GetInstance().AddRobot(robot);
         robot->SetServAddress(server_address, server_port);
         robot->ConnectToServer();
-        Sleep(1);
+        sleep(1);
     }
 
     io.run();

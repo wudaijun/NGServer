@@ -3,7 +3,7 @@
 
 
  std::map<int32_t, std::vector<int64_t>> TimeStater::_time_costs;
- std::map<int32_t, std::atomic_uint32_t> TimeStater::_msg_sendrecv;
+ std::map<int32_t, std::atomic<unsigned int>> TimeStater::_msg_sendrecv;
  std::map<int32_t, bool> TimeStater::_msg_stat_single;
  Locker TimeStater::_lock;
 
