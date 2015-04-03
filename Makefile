@@ -13,7 +13,7 @@ All : \
 # server 
 SERVER_SRC := ./GameServer/Player/*.cpp ./GameServer/Service/*.cpp ./GameServer/*.cpp
 $(OUT_PATH)/server : $(SERVER_SRC) $(LIB_PATH)/libgamebasic.so $(LIB_PATH)/libprotocol.so 	
-	$(CC) -o $@ -w --std=c++11 -I . -I ./GameServer $(SERVER_SRC) -L $(LIB_PATH) -l gamebasic -l protocol
+	$(CC) -o $@ -g -w --std=c++11 -I . -I ./GameServer $(SERVER_SRC) -L $(LIB_PATH) -l gamebasic -l protocol
  
 #ALL : $(LIB_PATH)/gamebasic.so $(LIB_PATH)/protocol.so
 #.PHONY : ALL
